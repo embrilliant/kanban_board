@@ -1,0 +1,93 @@
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #dddddd;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    height: 95%;
+}
+
+#wrap {
+    width: 100%;
+    height: 90%;
+}
+
+#container {
+    width: 100%;
+    height: 83%;
+}
+
+form {
+    width: 100%;
+    height: 16%;
+    margin-top: 1%;
+    background-color: none;
+    border-radius: 5px;
+    border: solid 3px #ffffff;
+}
+
+input {
+    font-size: medium;
+}
+
+.board {
+    background-color: #fffa90;
+    width: 100%;
+    height: 100%;
+    border: solid 3px #ffffff;
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px 1px rgba(36, 36, 36, 0.6);
+}
+
+.column {
+    text-align: center;
+    display: inline-block;
+    float: left;
+    width: 25%;
+    height: 100%;
+    background-color: #D1D1D1;
+    color: white;
+    font-size: x-large;
+    text-shadow: 1px 1px 1px rgba(6, 6, 6, 0.66);
+}
+
+header {
+    background-color: rgba(255, 148, 226, 0.5);
+    height: 8%;
+}
+
+.ticket {
+    font-size: small;
+    color: black;
+    font-weight: 500;
+    text-align: left;
+    text-shadow: none;
+    background-color: snow;
+    width: 100px;
+    height: 80px;
+    box-shadow: 1px 1px 3px 0px rgba(10, 10, 10, 0.6);
+    margin: 2px;
+}
+
+#To_Do {
+    background-color: #fcffa5;
+}
+
+#In_Progress {
+    background-color: rgba(255, 204, 162, 0.77);
+}
+
+#Review {
+    background-color: #c9ffcb;
+}
+
+#Done {
+    background-color: #dfb9ff;
+}
+
+#errorMsg {
+    color: #6a6a6a;
+}
