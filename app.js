@@ -27,37 +27,22 @@ $(function() {
             var divId = columnTitle.replace(/ /g,'_');
             var cssClass = arrayOfColumns[i].constructor.name.toLowerCase();
             var $newDiv = $('<div/>',{ id: divId, "class": cssClass});
-            $newDiv.append("<header>"+ columnTitle +" ("+ arrayOfColumns[i].getWipNumber() +") </header><section></section>");
+            $newDiv.append("<header><span>"+ columnTitle +"</span> ("+ arrayOfColumns[i].getWipNumber() +") </header><section></section>");
             $("#"+boardName).append($newDiv);
-        }
-    }
-
-    function ticketRender(column) {
-        var whichBoard = column.getTitle().replace(/ /g, '_');
-        var $board = $("#" + whichBoard);
-        $board.find("section").html("");
-        var arrayOfTickets = column.showAllTicket();
-        if ( arrayOfTickets.length > 0 ) {
-            for (var i = 0; i < column.getTicketCount(); i++) {
-                var ticketTitle = arrayOfTickets[i].getTitle();
-                var ticketDescription = arrayOfTickets[i].getDescription();
-                var cssClass = arrayOfTickets[i].constructor.name.toLowerCase();
-                var $newDiv = $('<div/>', {"class": cssClass});
-                $newDiv.html("Title: "+ ticketTitle +"<br>Description: "+ ticketDescription);
-                $board.find("section").append($newDiv);
-            }
+            //find child element javascript
+            var theColumn = $newDiv.get(0);
+            theColumn.getElementsByTagName("section")[0].addEventListener("drop", drop, false);
+            theColumn.getElementsByTagName("section")[0].addEventListener("dragover", allowDrop, false);
         }
     }
 
     function createATicket(ticketTitle, ticketDescription, destinationColumn) {
-        //check if ticket already exist on the whole board
-        var ticketExists = newBoard.checkIfATicketExistOnBoard(ticketTitle);
+
         var reachedWipOrNot = destinationColumn.reachedWipOrNot();
         if (!reachedWipOrNot) {
             if (!ticketExists) {
                 var newTicket = new Ticket(ticketTitle, ticketDescription);
                 destinationColumn.addOneTicket(newTicket);
-                ticketRender(destinationColumn);
                 errorMsg = "";
             } else {
                 errorMsg = "Ticket already exists.";
@@ -72,16 +57,88 @@ $(function() {
         //3. render the column that has the ticket
     }
 
+    function ticketRender(column) {
+        var whichBoard = column.getTitle().replace(/ /g, '_');
+        var $board = $("#" + whichBoard);
+        $board.find("section").html("");
+        var arrayOfTickets = column.showAllTicket();
+        if ( arrayOfTickets.length > 0 ) {
+            for (var i = 0; i < column.getTicketCount(); i++) {
+                var ticketTitle = arrayOfTickets[i].getTitle();
+                var ticketDescription = arrayOfTickets[i].getDescription();
+                var cssClass = arrayOfTickets[i].constructor.name.toLowerCase();
+                var $newDiv = $('<div/>', {"class": cssClass,
+                                            "draggable": "true"
+                                            });
+                $newDiv.html("Title: <span>"+ ticketTitle +"</span><br>Description: "+ ticketDescription);
+                $board.find("section").append($newDiv);
+                var newDiv = $newDiv.get(0);//
+                newDiv.addEventListener("dragstart", drag, false);
+            }
+        }
+    }
+
     boardRender();
 
     columnRender("Kanban");
 
+    //drag and drop functionality
+
+    var draggedTicketTitle;
+
+    function allowDrop(event) {
+        event.preventDefault();
+    }
+
+    function drag(event) {
+        event.dataTransfer.setData("text", event.target.id);
+        //ev.originalEvent.dataTransfer.setData("text", ev.target.id);
+
+        draggedTicketTitle = $(this).find("span").text();
+
+    }
+
+    function drop(event) {
+        event.preventDefault();
+        var data = event.dataTransfer.getData("text");
+        //ev.target.appendChild(document.getElementById(data));
+        var $target = $(event.target);
+        $target.append($( document.getElementById(data) ) );
+
+        //get new column info
+        //var columnId = $target.closest(".column").attr("id");
+        var destinationColumnTitle = $target.siblings("header").find("span").text();
+        var ticketExists = newBoard.checkIfATicketExistOnBoard(draggedTicketTitle);///////
+        var columnFound = newBoard.findColumnByTitle(destinationColumnTitle);
+
+        var columnOrigin = newBoard.findColumnByTicketTitle(draggedTicketTitle);
+
+        var ticketFound = columnOrigin.findTicketByTitle(draggedTicketTitle);
+
+        if ( !columnFound.reachedWipOrNot() ) {
+            columnFound.addOneTicket(ticketFound);
+            columnOrigin.removeTicketByTitle(draggedTicketTitle);
+            ticketRender(columnOrigin);
+            ticketRender(columnFound);
+            errorMsg = "";
+        } else {
+            errorMsg = "destination column reached WIP.";
+            console.log("reached WIP.");
+        }
+    }
+
     $("#create_a_ticket").on("click", function(e) {
         e.preventDefault();
+
         var title = $("input[name='ticket_title']").val();
         var description = $("input[name='ticket_description']").val();
+        //check if ticket already exist on the whole board
+        var ticketExists = newBoard.checkIfATicketExistOnBoard(title);
+
+
         if (title.length != 0 && description != 0) {
             createATicket(title, description, columnToDo);
+            ticketRender(columnToDo);
         } else {
             errorMsg = "Please enter title and description.";
         }
@@ -143,5 +200,6 @@ $(function() {
     $("button").on("click", function() {
         $("#errorMsg").text(errorMsg);
     });
+
 });
 

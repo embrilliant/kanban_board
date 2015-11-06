@@ -1,4 +1,6 @@
 html {
+    background-image: url("../images/cake.jpg");
+    background-size: cover;
     height: 100%;
     margin: 0;
     padding: 0;
@@ -7,39 +9,40 @@ html {
 }
 
 body {
-    height: 95%;
+    height: 98%;
 }
 
 #wrap {
-    width: 100%;
-    height: 90%;
+    margin: auto;
+    width: 90%;
+    height: 95%;
 }
 
 #container {
     width: 100%;
-    height: 83%;
+    height: 82%;
+}
+
+.board {
+    /*background-color: #fffa90;*/
+    width: 100%;
+    height: 100%;
+    border: solid 4px #ffffff;
+    border-radius: 5px;
+    box-shadow: 2px 5px 20px -2px rgba(100, 100, 100, 0.8);
 }
 
 form {
     width: 100%;
-    height: 16%;
-    margin-top: 1%;
-    background-color: none;
+    height: 16.5%;
+    margin-top: 1.5%;
     border-radius: 5px;
-    border: solid 3px #ffffff;
+    border: solid 4px #ffffff;
+    background-color: rgba(221, 221, 221, 0.2);
 }
 
 input {
     font-size: medium;
-}
-
-.board {
-    background-color: #fffa90;
-    width: 100%;
-    height: 100%;
-    border: solid 3px #ffffff;
-    border-radius: 5px;
-    box-shadow: 2px 2px 5px 1px rgba(36, 36, 36, 0.6);
 }
 
 .column {
@@ -48,15 +51,24 @@ input {
     float: left;
     width: 25%;
     height: 100%;
-    background-color: #D1D1D1;
-    color: white;
-    font-size: x-large;
-    text-shadow: 1px 1px 1px rgba(6, 6, 6, 0.66);
+    background-color: rgba(220, 220, 220, 0.5);
+}
+
+.column:nth-child(even) {
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 header {
-    background-color: rgba(255, 148, 226, 0.5);
+    background-color: rgba(245, 245, 245, 0.90);
     height: 8%;
+    font-size: x-large;
+    padding-top: 10%;
+    color: #C3C3C3;
+    text-shadow: 1px 1px 1px rgba(6, 6, 6, 0.53);
+}
+
+section {
+    height: 90%;
 }
 
 .ticket {
@@ -68,26 +80,27 @@ header {
     background-color: snow;
     width: 100px;
     height: 80px;
-    box-shadow: 1px 1px 3px 0px rgba(10, 10, 10, 0.6);
-    margin: 2px;
+    box-shadow: 1px 2px 3px 0px rgba(10, 10, 10, 0.36);
+    margin: 2%;
 }
 
 #To_Do {
-    background-color: #fcffa5;
+    /*background-color: #fcffa5;*/
 }
 
 #In_Progress {
-    background-color: rgba(255, 204, 162, 0.77);
+    /*background-color: rgba(255, 204, 162, 0.77);*/
 }
 
 #Review {
-    background-color: #c9ffcb;
+    /*background-color: #c9ffcb;*/
 }
 
 #Done {
-    background-color: #dfb9ff;
+    /*background-color: #dfb9ff;*/
 }
 
 #errorMsg {
     color: #6a6a6a;
 }
+
