@@ -36,8 +36,9 @@ $(function() {
         }
     }
 
-    function createATicket(ticketTitle, ticketDescription, destinationColumn) {
+    function createATicket(ticketTitle, ticketDescription, destinationColumn, renderFunc) {
 
+        var ticketExists = newBoard.checkIfATicketExistOnBoard(ticketTitle);
         var reachedWipOrNot = destinationColumn.reachedWipOrNot();
         if (!reachedWipOrNot) {
             if (!ticketExists) {
@@ -52,6 +53,7 @@ $(function() {
             errorMsg = "destination column reached WIP.";
             console.log("reached WIP.");
         }
+        renderFunc(columnToDo);
         //1. create a ticket with Title and Description
         //2. set a destination column and add it to the array in that column
         //3. render the column that has the ticket
@@ -91,40 +93,21 @@ $(function() {
     }
 
     function drag(event) {
-        event.dataTransfer.setData("text", event.target.id);
+        //event.dataTransfer.setData("text", event.target.id);
         //ev.originalEvent.dataTransfer.setData("text", ev.target.id);
-
-        draggedTicketTitle = $(this).find("span").text();
-
+        draggedTicketTitle = $(event.target).find("span").text();
     }
 
     function drop(event) {
         event.preventDefault();
-        var data = event.dataTransfer.getData("text");
+        //var data = event.dataTransfer.getData("text");
         //ev.target.appendChild(document.getElementById(data));
         var $target = $(event.target);
-        $target.append($( document.getElementById(data) ) );
+        //$target.append($( document.getElementById(data) ) );
 
-        //get new column info
-        //var columnId = $target.closest(".column").attr("id");
         var destinationColumnTitle = $target.siblings("header").find("span").text();
-        var ticketExists = newBoard.checkIfATicketExistOnBoard(draggedTicketTitle);///////
-        var columnFound = newBoard.findColumnByTitle(destinationColumnTitle);
+        moveTicket(draggedTicketTitle, destinationColumnTitle);
 
-        var columnOrigin = newBoard.findColumnByTicketTitle(draggedTicketTitle);
-
-        var ticketFound = columnOrigin.findTicketByTitle(draggedTicketTitle);
-
-        if ( !columnFound.reachedWipOrNot() ) {
-            columnFound.addOneTicket(ticketFound);
-            columnOrigin.removeTicketByTitle(draggedTicketTitle);
-            ticketRender(columnOrigin);
-            ticketRender(columnFound);
-            errorMsg = "";
-        } else {
-            errorMsg = "destination column reached WIP.";
-            console.log("reached WIP.");
-        }
     }
 
     $("#create_a_ticket").on("click", function(e) {
@@ -132,13 +115,9 @@ $(function() {
 
         var title = $("input[name='ticket_title']").val();
         var description = $("input[name='ticket_description']").val();
-        //check if ticket already exist on the whole board
-        var ticketExists = newBoard.checkIfATicketExistOnBoard(title);
-
 
         if (title.length != 0 && description != 0) {
-            createATicket(title, description, columnToDo);
-            ticketRender(columnToDo);
+            createATicket(title, description, columnToDo, ticketRender);
         } else {
             errorMsg = "Please enter title and description.";
         }
@@ -146,17 +125,23 @@ $(function() {
 
     $("#move_ticket").on("click", function(e) {
         e.preventDefault();
-        //1. find the ticket
         var ticketTitle = $("input[name='ticket_title']").val();
-        var ticketExists = newBoard.checkIfATicketExistOnBoard(ticketTitle);
+        var columnTitle = $("input[name='column_title']").val();
+        moveTicket(ticketTitle, columnTitle);
+    });
+
+    function moveTicket(ticketTitle, columnTitle) {
+        //1. check if ticket exists.
+        var ticketExists = newBoard.checkIfATicketExistOnBoard(ticketTitle); // need ticketTitle
         if (ticketExists) {
+            //2. find the column
             var columnOrigin = newBoard.findColumnByTicketTitle(ticketTitle);
             var ticketFound = columnOrigin.findTicketByTitle(ticketTitle);
-            //2. find the column
-            var columnTitle = $("input[name='column_title']").val();
-            var columnFound = newBoard.findColumnByTitle(columnTitle);
+            var columnFound = newBoard.findColumnByTitle(columnTitle); // need columnTitle
             if (columnFound) {
+                //check if reached Wip or not
                 if ( !columnFound.reachedWipOrNot() ) {
+                    //3. move the ticketFound to the columnFound
                     columnFound.addOneTicket(ticketFound);
                     columnOrigin.removeTicketByTitle(ticketTitle);
                     ticketRender(columnOrigin);
@@ -166,7 +151,6 @@ $(function() {
                     errorMsg = "destination column reached WIP.";
                     console.log("reached WIP.");
                 }
-                //3. move the ticketFound to the columnFound
             } else {
                 errorMsg = "Cannot find such column.";
                 console.log("Cannot find such column.");
@@ -175,7 +159,7 @@ $(function() {
             errorMsg = "Ticket not found.";
             console.log("Ticket not found.");
         }
-    });
+    }
 
     $("#delete_ticket").on("click", function(e) {
         e.preventDefault();
