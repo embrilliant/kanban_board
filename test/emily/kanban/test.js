@@ -1,47 +1,12 @@
-
-
-suite("1. Board object", function() {
-   test("there should be a Board object", function() {
-       var newBoard = new Board();
-       newBoard.should.be.a("object");
-   });
-});
-
-suite("2. Column object ", function() {
-    test("there should be Column objects", function() {
-        var newColumn = new Column();
-        newColumn.should.be.a("object");
-    });
-});
-
-suite("3. Column title", function() {
-    test("Each Column should have a title that is a string", function() {
-        var newColumn = new Column("To Do");
-        var title = newColumn.getTitle();
-        assert.equal("To Do", title);
-    });
-});
-
-suite("4. Column WIP number", function() {
-    test("Column should have a WIP number", function() {
-        var newColumn = new Column("To Do", 5);
-        var title = newColumn.getTitle();
-        var wip = newColumn.getWipNumber();
-        newColumn.should.be.a("object");
-        assert.equal("To Do", title);
-        assert.equal(wip, 5);
-    });
-});
-
-/* Tests for Ticket object */
-suite("5. ticket objects", function() {
+// Ticket tests
+suite("Ticket object", function() {
     test("there should be ticket objects", function() {
         var newTicket = new Ticket();
         newTicket.should.be.a("object");
     });
 });
 
-suite("6. ticket objects", function() {
+suite("Ticket object with Title", function() {
     test("ticket objects should have titles", function() {
         var newTicket = new Ticket("Title");
         var title = newTicket.getTitle();
@@ -49,16 +14,45 @@ suite("6. ticket objects", function() {
     });
 });
 
-suite("7. ticket objects", function() {
+suite("Ticket object with description", function() {
     test("a ticket object should have a description", function() {
         var newTicket = new Ticket("Title", "Description");
         var description = newTicket.getDescription();
         assert("Description", description);
     });
 });
-/**/
 
-suite("8. Column containing tickets", function() {
+suite("Create a ticket with Title and Description", function() {
+    test("A Ticket should be created", function() {
+        var ticket1 = new Ticket("Task 1", "This task should be done first.");
+        var ticketTitle = ticket1.getTitle();
+        var ticketDes = ticket1.getDescription();
+        ticket1.should.be.a("object");
+        assert.equal(ticketTitle, "Task 1");
+        assert.equal(ticketDes, "This task should be done first.");
+    });
+});
+
+// Column tests
+suite("Column object ", function() {
+    test("there should be Column objects", function() {
+        var newColumn = new Column();
+        newColumn.should.be.a("object");
+    });
+});
+
+suite("Create a column", function() {
+    test("A Column should be created with Title and Wip number", function() {
+        var columnToDo = new Column("To Do", 5);
+        var colTitle = columnToDo.getTitle();
+        var colWip = columnToDo.getWipNumber();
+        columnToDo.should.be.a("object");
+        assert.equal(colTitle, "To Do");
+        assert.equal(colWip, 5);
+    });
+});
+
+suite("Column containing tickets", function() {
     test("there should be an array of Tickets in the Column", function() {
         var newColumn = new Column("To Do", 5);
         var array = newColumn.showAllTicket();
@@ -66,21 +60,41 @@ suite("8. Column containing tickets", function() {
     });
 });
 
-suite("9. Adding tickets", function() {
+suite("Column Adding tickets", function() {
     test("method to add a ticket", function() {
         var newColumn = new Column("To Do", 5);
         newColumn.addOneTicket();
+        var array = newColumn.showAllTicket();
+        assert.lengthOf(array, 1);
     });
 });
 
-suite("10. Removing tickets (method removed)", function() {
-    test("method to remove a ticket", function() {
-        var newColumn = new Column("To Do", 5);
+suite("Add a ticket to Column", function() {
+    test("One ticket should be added to the Column", function() {
+        var columnToDo = new Column("To Do", 5);
+        var ticket1 = new Ticket("Task 1", "This task should be done first.");
+        columnToDo.addOneTicket(ticket1);
+        var arrayOfTickets = columnToDo.showAllTicket();
+        assert.lengthOf(arrayOfTickets, 1);
+        assert.deepEqual(arrayOfTickets[0], ticket1);
     });
 });
 
-suite("11. Find a certain Ticket in the array", function() {
-    test("ticket array containing a certain ticket", function() {
+suite("Add another ticket to the Column", function() {
+    test("Another ticket should be added to the Column", function() {
+        var columnToDo = new Column("To Do", 5);
+        var ticket1 = new Ticket("Task 1", "This task should be done first.");
+        var ticket2 = new Ticket("Task 2", "This task should be done after the first one.");
+        columnToDo.addOneTicket(ticket1);
+        columnToDo.addOneTicket(ticket2);
+        var arrayOfTickets = columnToDo.showAllTicket();
+        assert.lengthOf(arrayOfTickets, 2);
+        assert.deepEqual(arrayOfTickets[1], ticket2);
+    });
+});
+
+suite("Find a certain Ticket in Column", function() {
+    test("Column ticket array containing a certain ticket", function() {
         var newColumn = new Column("To Do", 5);
         var ticketArray = newColumn.showAllTicket();
         var title = "Do this task";
@@ -94,56 +108,8 @@ suite("11. Find a certain Ticket in the array", function() {
     });
 });
 
-//test again
-suite("12. Create a column", function() {
-    test("A Column should be created", function() {
-        var columnToDo = new Column("To Do", 5);
-        var colTitle = columnToDo.getTitle();
-        var colWip = columnToDo.getWipNumber();
-        columnToDo.should.be.a("object");
-        assert.equal(colTitle, "To Do");
-        assert.equal(colWip, 5);
-    });
-});
-
-suite("13. Create a ticket", function() {
-    test("A Ticket should be created", function() {
-        var ticket1 = new Ticket("Task 1", "This task should be done first.");
-        var ticketTitle = ticket1.getTitle();
-        var ticketDes = ticket1.getDescription();
-        ticket1.should.be.a("object");
-        assert.equal(ticketTitle, "Task 1");
-        assert.equal(ticketDes, "This task should be done first.");
-    });
-});
-
-suite("14. Add a ticket to the Column", function() {
-    test("One ticket should be added to the Column", function() {
-        var columnToDo = new Column("To Do", 5);
-        var ticket1 = new Ticket("Task 1", "This task should be done first.");
-        columnToDo.addOneTicket(ticket1);
-        var arrayOfTickets = columnToDo.showAllTicket();
-        assert.lengthOf(arrayOfTickets, 1);
-        assert.deepEqual(arrayOfTickets[0], ticket1);
-    });
-});
-
-suite("15. Add another ticket to the Column", function() {
-    test("Another ticket should be added to the Column", function() {
-        var columnToDo = new Column("To Do", 5);
-        var ticket1 = new Ticket("Task 1", "This task should be done first.");
-        var ticket2 = new Ticket("Task 2", "This task should be done after the first one.");
-        columnToDo.addOneTicket(ticket1);
-        columnToDo.addOneTicket(ticket2);
-        var arrayOfTickets = columnToDo.showAllTicket();
-        assert.lengthOf(arrayOfTickets, 2);
-        assert.deepEqual(arrayOfTickets[1], ticket2);
-    });
-});
-
-//New tests
-suite("16. Wip Number is the Max Length of Array", function() {
-    test("Wip is Max Length of Array", function() {
+suite("Wip Number is the Max number of tickets in a Column", function() {
+    test("Wip is the max Length of Array", function() {
         var columnToDo = new Column("To Do", 6);
         var columnInProgress = new Column("To Do", 2);
         var ticket1 = new Ticket("Task 1", "This task should be done first.");
@@ -165,7 +131,7 @@ suite("16. Wip Number is the Max Length of Array", function() {
     });
 });
 
-suite("17. Remove one ticket by Title from the Column", function() {
+suite("Remove one ticket by Title from the Column", function() {
     test("One ticket with the title should be removed from the Column", function() {
         var columnToDo = new Column("To Do", 5);
         var ticket1 = new Ticket("Task 1", "This task should be done first.");
@@ -179,7 +145,7 @@ suite("17. Remove one ticket by Title from the Column", function() {
     });
 });
 
-suite("18. Remove another ticket by Title from the Column", function() {
+suite("Remove another ticket by Title from the Column", function() {
     test("Again one ticket with the title should be removed from the Column", function() {
         var columnToDo = new Column("To Do", 5);
         var ticket1 = new Ticket("Task 1", "This task should be done first.");
@@ -194,43 +160,7 @@ suite("18. Remove another ticket by Title from the Column", function() {
     });
 });
 
-suite("19. Create a Board", function() {
-    test("A board with a name should be created", function() {
-        var newBoard = new Board("Kanban", 4);
-        var boardName = newBoard.getBoardName();
-        assert.isObject(newBoard);
-        assert.equal(boardName, "Kanban");
-    });
-});
-
-suite("20. Add Columns to Board", function() {
-    test("New columnws should be added to the Board", function() {
-        var newBoard = new Board("Kanban", 4);
-        var columnToDo = new Column("To Do", 5);
-        var columnInProgress = new Column("In Progress", 5);
-        newBoard.addOneColumnsToBoard(columnToDo);
-        newBoard.addOneColumnsToBoard(columnInProgress);
-        assert.lengthOf(newBoard.getAllColumns(), 2);
-        assert.deepEqual(newBoard.getAllColumns(), [columnToDo, columnInProgress]);
-    });
-});
-
-suite("21. Remove Columns by title from Board", function() {
-    test("Columns should be removed by title from the Board", function() {
-        var newBoard = new Board("Kanban", 4);
-        var columnToDo = new Column("To Do", 5);
-        var columnInProgress = new Column("In Progress", 5);
-        newBoard.addOneColumnsToBoard(columnToDo);
-        newBoard.addOneColumnsToBoard(columnInProgress);
-        assert.lengthOf(newBoard.getAllColumns(), 2);
-        assert.deepEqual(newBoard.getAllColumns(), [columnToDo, columnInProgress]);
-        newBoard.removeOneColumnByTitle("To Do");
-        assert.deepEqual(newBoard.getAllColumns(), [columnInProgress]);
-        assert.lengthOf(newBoard.getAllColumns(), 1);
-    });
-});
-
-suite("22. Find Ticket by Title", function() {
+suite("Find Ticket by Title in Column", function() {
     test("Find the ticket by its title", function() {
         var ticket1 = new Ticket("Task 1", "This task should be done first.");
         var ticket2 = new Ticket("Task 2", "This task should be done after the first one.");
@@ -244,7 +174,7 @@ suite("22. Find Ticket by Title", function() {
     });
 });
 
-suite("23. Find Ticket by Title and then change Title and Description", function() {
+suite("Find Ticket by Title in Column and then change Title and Description", function() {
     test("Find the ticket by its title and then change its title and description", function() {
         var ticket1 = new Ticket("Task 1", "This task should be done first.");
         var ticket2 = new Ticket("Task 2", "This task should be done after the first one.");
@@ -261,12 +191,7 @@ suite("23. Find Ticket by Title and then change Title and Description", function
     });
 });
 
-suite("24. Maximum number of Tickets (Method changed)", function() {
-    test("A Column should have a maximum number of tickets", function() {
-    });
-});
-
-suite("25. Find Column by Title", function() {
+suite("Column by Title", function() {
     test("Find the Column by its title", function() {
         var newBoard = new Board("Kanban", 4);
         var columnToDo = new Column("To Do", 3);
@@ -282,8 +207,70 @@ suite("25. Find Column by Title", function() {
     });
 });
 
-suite("26. Find a specific ticket by Title among all columns", function() {
-    test("Find a specific ticket by Title among all columns", function() {
+suite("Check if ticket by title already exits in Column", function() {
+    test("Check if ticket by title already exits on the whole Board", function() {
+        var newBoard = new Board("Kanban", 4);
+        var columnInProgress = new Column("In Progress", 4);
+        newBoard.addOneColumnsToBoard(columnInProgress);
+        var ticket1 = new Ticket("Task 1", "This task should be done first.");
+        var ticket2 = new Ticket("Task 2", "This task should be done after the first one.");
+        var ticket3 = new Ticket("Task 3", "It should be done at some point.");
+        var ticket4 = new Ticket("Task 4", "Description.");
+        columnInProgress.addOneTicket(ticket1);
+        columnInProgress.addOneTicket(ticket2);
+        columnInProgress.addOneTicket(ticket3);
+        columnInProgress.addOneTicket(ticket4);
+        var ticketExists = newBoard.checkIfATicketExistOnBoard("Task 5");
+        assert.notOk(ticketExists);
+    });
+});
+
+// Board test
+suite("Board object", function() {
+   test("there should be a Board object", function() {
+       var newBoard = new Board();
+       newBoard.should.be.a("object");
+   });
+});
+
+suite("Create a Board", function() {
+    test("A board with a name should be created", function() {
+        var newBoard = new Board("Kanban", 4);
+        var boardName = newBoard.getBoardName();
+        assert.isObject(newBoard);
+        assert.equal(boardName, "Kanban");
+    });
+});
+
+suite("Add Columns to Board", function() {
+    test("New columnws should be added to the Board", function() {
+        var newBoard = new Board("Kanban", 4);
+        var columnToDo = new Column("To Do", 5);
+        var columnInProgress = new Column("In Progress", 5);
+        newBoard.addOneColumnsToBoard(columnToDo);
+        newBoard.addOneColumnsToBoard(columnInProgress);
+        assert.lengthOf(newBoard.getAllColumns(), 2);
+        assert.deepEqual(newBoard.getAllColumns(), [columnToDo, columnInProgress]);
+    });
+});
+
+suite("Remove Columns by title from Board", function() {
+    test("Columns should be removed by title from the Board", function() {
+        var newBoard = new Board("Kanban", 4);
+        var columnToDo = new Column("To Do", 5);
+        var columnInProgress = new Column("In Progress", 5);
+        newBoard.addOneColumnsToBoard(columnToDo);
+        newBoard.addOneColumnsToBoard(columnInProgress);
+        assert.lengthOf(newBoard.getAllColumns(), 2);
+        assert.deepEqual(newBoard.getAllColumns(), [columnToDo, columnInProgress]);
+        newBoard.removeOneColumnByTitle("To Do");
+        assert.deepEqual(newBoard.getAllColumns(), [columnInProgress]);
+        assert.lengthOf(newBoard.getAllColumns(), 1);
+    });
+});
+
+suite("Find column by ticket Title in Board", function() {
+    test("Find the column ticket by Title among in Board", function() {
         var newBoard = new Board("Kanban", 4);
         var columnToDo = new Column("To Do", 3);
         var columnInProgress = new Column("In Progress", 3);
@@ -302,25 +289,8 @@ suite("26. Find a specific ticket by Title among all columns", function() {
     });
 });
 
-suite("27. Check if ticket by title already exits", function() {
-    test("Check if ticket by title already exits on the whole Board", function() {
-        var newBoard = new Board("Kanban", 4);
-        var columnInProgress = new Column("In Progress", 4);
-        newBoard.addOneColumnsToBoard(columnInProgress);
-        var ticket1 = new Ticket("Task 1", "This task should be done first.");
-        var ticket2 = new Ticket("Task 2", "This task should be done after the first one.");
-        var ticket3 = new Ticket("Task 3", "It should be done at some point.");
-        var ticket4 = new Ticket("Task 4", "Description.");
-        columnInProgress.addOneTicket(ticket1);
-        columnInProgress.addOneTicket(ticket2);
-        columnInProgress.addOneTicket(ticket3);
-        columnInProgress.addOneTicket(ticket4);
-        var ticketExists = newBoard.checkIfATicketExistOnBoard("Task 5");
-        assert.isFalse(ticketExists);
-    });
-});
-
-suite("28. Check if ticket by title already exits before adding a new ticket", function() {
+// Integration
+suite("Check if ticket by title already exits in the whole Board before adding a new ticket to Column", function() {
     test("Add a new ticket if ticket by title doesn't exits on the whole Board", function() {
         var newBoard = new Board("Kanban", 4);
 

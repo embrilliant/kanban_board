@@ -13,6 +13,26 @@ $(function() {
     newBoard.addOneColumnsToBoard(columnReview);
     newBoard.addOneColumnsToBoard(columnDone);
 
+    var dAndD = new function() {
+        var draggedTicketTitle;
+
+        this.allowDrop = function(event) {
+            event.preventDefault();
+        };
+
+        this.drag = function(event) {
+            draggedTicketTitle = $(event.target).find("span").text();
+        };
+
+        this.drop = function(event, moveTicketFunc, ticketRenderFunc) {
+            event.preventDefault();
+            var $target = $(event.target);
+            var destinationColumnTitle = $target.siblings("header").find("span").text();
+            moveTicketFunc(draggedTicketTitle, destinationColumnTitle, ticketRenderFunc);
+            $("#errorMsg").text(errorMsg);
+        };
+    };
+
     function boardRender() {
         var boardName = newBoard.getBoardName();
         var cssClass = newBoard.constructor.name.toLowerCase();
@@ -31,13 +51,14 @@ $(function() {
             $("#"+boardName).append($newDiv);
             //find child element javascript
             var theColumn = $newDiv.get(0);
-            theColumn.getElementsByTagName("section")[0].addEventListener("drop", drop, false);
-            theColumn.getElementsByTagName("section")[0].addEventListener("dragover", allowDrop, false);
+            theColumn.getElementsByTagName("section")[0].addEventListener("dragover", dAndD.allowDrop, false);
+            theColumn.getElementsByTagName("section")[0].addEventListener("drop", function() {
+                dAndD.drop(event, moveTicket, ticketRender);
+            }, false);
         }
     }
 
-    function createATicket(ticketTitle, ticketDescription, destinationColumn, renderFunc) {
-
+    function createATicket(ticketTitle, ticketDescription, destinationColumn, ticketRenderFunc) {
         var ticketExists = newBoard.checkIfATicketExistOnBoard(ticketTitle);
         var reachedWipOrNot = destinationColumn.reachedWipOrNot();
         if (!reachedWipOrNot) {
@@ -53,7 +74,7 @@ $(function() {
             errorMsg = "destination column reached WIP.";
             console.log("reached WIP.");
         }
-        renderFunc(columnToDo);
+        ticketRenderFunc(columnToDo);
         //1. create a ticket with Title and Description
         //2. set a destination column and add it to the array in that column
         //3. render the column that has the ticket
@@ -75,62 +96,12 @@ $(function() {
                 $newDiv.html("Title: <span>"+ ticketTitle +"</span><br>Description: "+ ticketDescription);
                 $board.find("section").append($newDiv);
                 var newDiv = $newDiv.get(0);//
-                newDiv.addEventListener("dragstart", drag, false);
+                newDiv.addEventListener("dragstart", dAndD.drag, false);
             }
         }
     }
 
-    boardRender();
-
-    columnRender("Kanban");
-
-    //drag and drop functionality
-
-    var draggedTicketTitle;
-
-    function allowDrop(event) {
-        event.preventDefault();
-    }
-
-    function drag(event) {
-        //event.dataTransfer.setData("text", event.target.id);
-        //ev.originalEvent.dataTransfer.setData("text", ev.target.id);
-        draggedTicketTitle = $(event.target).find("span").text();
-    }
-
-    function drop(event) {
-        event.preventDefault();
-        //var data = event.dataTransfer.getData("text");
-        //ev.target.appendChild(document.getElementById(data));
-        var $target = $(event.target);
-        //$target.append($( document.getElementById(data) ) );
-
-        var destinationColumnTitle = $target.siblings("header").find("span").text();
-        moveTicket(draggedTicketTitle, destinationColumnTitle);
-
-    }
-
-    $("#create_a_ticket").on("click", function(e) {
-        e.preventDefault();
-
-        var title = $("input[name='ticket_title']").val();
-        var description = $("input[name='ticket_description']").val();
-
-        if (title.length != 0 && description != 0) {
-            createATicket(title, description, columnToDo, ticketRender);
-        } else {
-            errorMsg = "Please enter title and description.";
-        }
-    });
-
-    $("#move_ticket").on("click", function(e) {
-        e.preventDefault();
-        var ticketTitle = $("input[name='ticket_title']").val();
-        var columnTitle = $("input[name='column_title']").val();
-        moveTicket(ticketTitle, columnTitle);
-    });
-
-    function moveTicket(ticketTitle, columnTitle) {
+    function moveTicket(ticketTitle, columnTitle, ticketRenderFunc) {
         //1. check if ticket exists.
         var ticketExists = newBoard.checkIfATicketExistOnBoard(ticketTitle); // need ticketTitle
         if (ticketExists) {
@@ -144,8 +115,8 @@ $(function() {
                     //3. move the ticketFound to the columnFound
                     columnFound.addOneTicket(ticketFound);
                     columnOrigin.removeTicketByTitle(ticketTitle);
-                    ticketRender(columnOrigin);
-                    ticketRender(columnFound);
+                    ticketRenderFunc(columnOrigin);
+                    ticketRenderFunc(columnFound);
                     errorMsg = "";
                 } else {
                     errorMsg = "destination column reached WIP.";
@@ -161,15 +132,13 @@ $(function() {
         }
     }
 
-    $("#delete_ticket").on("click", function(e) {
-        e.preventDefault();
-        var ticketTitle = $("input[name='ticket_title']").val();
+    function deleteTicket(ticketTitle, ticketRenderFunc) {
         var ticketExists = newBoard.checkIfATicketExistOnBoard(ticketTitle);
         if (ticketExists) {
             var columnOrigin = newBoard.findColumnByTicketTitle(ticketTitle);
             if (columnOrigin.getTitle() === columnDone.getTitle()) {
                 columnDone.removeTicketByTitle(ticketTitle);
-                ticketRender(columnDone);
+                ticketRenderFunc(columnDone);
                 errorMsg = "";
             } else {
                 errorMsg = "Ticket can only be deleted from Done.";
@@ -179,11 +148,39 @@ $(function() {
             errorMsg = "Ticket not found.";
             console.log("Ticket not found.");
         }
+    }
+
+    boardRender();
+
+    columnRender("Kanban");
+
+    $("#create_a_ticket").on("click", function(e) {
+        e.preventDefault();
+
+        var title = $("input[name='ticket_title']").val();
+        var description = $("input[name='ticket_description']").val();
+
+        if (title.length != 0 && description != 0) {
+            createATicket(title, description, columnToDo, ticketRender);
+        } else {
+            errorMsg = "Please enter title and description.";
+        }
+        $("#errorMsg").text(errorMsg);
     });
 
-    $("button").on("click", function() {
+    $("#move_ticket").on("click", function(event) {
+        event.preventDefault();
+        var ticketTitle = $("input[name='ticket_title']").val();
+        var columnTitle = $("input[name='column_title']").val();
+        moveTicket(ticketTitle, columnTitle, ticketRender);
+        $("#errorMsg").text(errorMsg);
+    });
+
+    $("#delete_ticket").on("click", function(event) {
+        event.preventDefault();
+        var ticketTitle = $("input[name='ticket_title']").val();
+        deleteTicket(ticketTitle, ticketRender);
         $("#errorMsg").text(errorMsg);
     });
 
 });
-
