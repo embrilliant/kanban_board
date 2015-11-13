@@ -20,11 +20,26 @@ body {
 
 #container {
     width: 100%;
-    height: 82%;
+    height: 80%;
 }
 
+#vidBg {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    z-index: -1;
+    overflow: hidden;
+}
+
+    #vidBg video {
+        position: inherit;
+        width: 89%;
+        height: 81%;
+        overflow: hidden;
+        opacity: 0.5;
+    }
+
 .board {
-    /*background-color: #fffa90;*/
     width: 100%;
     height: 100%;
     border: solid 4px #ffffff;
@@ -32,17 +47,26 @@ body {
     box-shadow: 2px 5px 20px -2px rgba(100, 100, 100, 0.8);
 }
 
-form {
-    width: 100%;
-    height: 16.5%;
+#forms {
+    width: 99%;
+    height: 18%;
     margin-top: 1.5%;
+    padding: 0.5%;
     border-radius: 5px;
     border: solid 4px #ffffff;
-    background-color: rgba(221, 221, 221, 0.2);
+    text-shadow: 1px 1px 5px rgba(10, 10, 10, 0.5);
+    background-color: rgba(221, 221, 221, 0.25);
+    box-shadow: inset 0px 0px 6px 0px rgba(70, 70, 70, 0.7), 2px 5px 20px -2px rgba(100, 100, 100, 0.8);
 }
 
 input {
     font-size: medium;
+    margin: 3px;
+    border-radius: 2px;
+}
+
+input:focus{
+    outline: 0;
 }
 
 .column {
@@ -78,30 +102,21 @@ section {
     text-align: left;
     text-shadow: none;
     background-color: snow;
-    width: 100px;
-    height: 80px;
+    width: 66%;
+    height: 15%;
     box-shadow: 1px 1px 2px 0px rgba(50, 50, 50, 0.36);
     margin: 2%;
-    border-radius: 2px;
+    border-radius: 3px;
 }
 
-#To_Do {
-    /*background-color: #fcffa5;*/
-}
-
-#In_Progress {
-    /*background-color: rgba(255, 204, 162, 0.77);*/
-}
-
-#Review {
-    /*background-color: #c9ffcb;*/
-}
-
-#Done {
-    /*background-color: #dfb9ff;*/
+span.titleT {
+    font-weight: 600;
+    display: inline;
+    float: left;
 }
 
 #errorMsg {
     color: #6a6a6a;
 }
+
 

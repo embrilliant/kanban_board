@@ -13,6 +13,11 @@ $(function() {
     newBoard.addOneColumnsToBoard(columnReview);
     newBoard.addOneColumnsToBoard(columnDone);
 
+    var retrieveTicketsToDo = JSON.parse( localStorage.getItem("ticketsToDo") );
+    var retrieveTicketsInProgress = JSON.parse( localStorage.getItem("ticketsInProgress") );
+    var retrieveTicketsReview = JSON.parse( localStorage.getItem("ticketsReview") );
+    var retrieveTicketsDone = JSON.parse( localStorage.getItem("ticketsDone") );
+
     var dAndD = new function() {
         var draggedTicketTitle;
 
@@ -32,6 +37,31 @@ $(function() {
             $("#errorMsg").text(errorMsg);
         };
     };
+
+    boardRender();
+
+    columnRender("Kanban");
+
+    //init retrieve
+    function initRetrieve() {
+
+        if (retrieveTicketsToDo === null) {
+            localStorage.setItem("ticketsToDo", JSON.stringify( columnToDo.showAllTicket() ) );
+            retrieveTicketsToDo = JSON.parse( localStorage.getItem("ticketsToDo") );
+        } else {
+            for (var i = 0; i < retrieveTicketsToDo.length; i++ ) {
+                var title = retrieveTicketsToDo[i].title;
+                var description = retrieveTicketsToDo[i].description;
+                var newTicket = new Ticket(title, description);
+                columnToDo.addOneTicket(newTicket);
+            }
+        }
+
+        ticketRender(columnToDo);
+    }
+    initRetrieve();
+
+    console.log(retrieveTicketsToDo, columnToDo.showAllTicket());
 
     function boardRender() {
         var boardName = newBoard.getBoardName();
@@ -65,6 +95,20 @@ $(function() {
             if (!ticketExists) {
                 var newTicket = new Ticket(ticketTitle, ticketDescription);
                 destinationColumn.addOneTicket(newTicket);
+                var newSimpleTicket = newTicket.toSimpleTicket();
+
+                //localStorage
+                if (retrieveTicketsToDo === null) {
+                    localStorage.setItem("ticketsToDo", JSON.stringify( destinationColumn.showAllTicket() ) );
+                    retrieveTicketsToDo = JSON.parse( localStorage.getItem("ticketsToDo") );
+                    retrieveTicketsToDo.push(newSimpleTicket);
+                } else {
+                    retrieveTicketsToDo.push(newSimpleTicket);
+                    localStorage.setItem("ticketsToDo", JSON.stringify( retrieveTicketsToDo ) );
+                }
+                console.log(retrieveTicketsToDo);
+                //localStorage
+
                 errorMsg = "";
             } else {
                 errorMsg = "Ticket already exists.";
@@ -149,10 +193,6 @@ $(function() {
             console.log("Ticket not found.");
         }
     }
-
-    boardRender();
-
-    columnRender("Kanban");
 
     $("#create_a_ticket").on("click", function(e) {
         e.preventDefault();
