@@ -8,15 +8,21 @@ $(function() {
     var columnReview = new Column("Review", 5);
     var columnDone = new Column("Done", 5);
 
-    newBoard.addOneColumnsToBoard(columnToDo);
-    newBoard.addOneColumnsToBoard(columnInProgress);
-    newBoard.addOneColumnsToBoard(columnReview);
-    newBoard.addOneColumnsToBoard(columnDone);
+    var columns = [columnToDo, columnInProgress, columnReview, columnDone];
 
-    var retrieveTicketsToDo = JSON.parse( localStorage.getItem("ticketsToDo") );
-    var retrieveTicketsInProgress = JSON.parse( localStorage.getItem("ticketsInProgress") );
-    var retrieveTicketsReview = JSON.parse( localStorage.getItem("ticketsReview") );
-    var retrieveTicketsDone = JSON.parse( localStorage.getItem("ticketsDone") );
+    for (var i = 0; i < columns.length; i++) {
+        newBoard.addOneColumnsToBoard(columns[i]);
+    }
+
+    var retrieveTicketsToDo = JSON.parse( localStorage.getItem("To_Do") );
+    var retrieveTicketsInProgress = JSON.parse( localStorage.getItem("In_Progress") );
+    var retrieveTicketsReview = JSON.parse( localStorage.getItem("Review") );
+    var retrieveTicketsDone = JSON.parse( localStorage.getItem("Done") );
+
+    console.log(retrieveTicketsToDo);
+    console.log(retrieveTicketsInProgress);
+    console.log(retrieveTicketsReview);
+    console.log(retrieveTicketsDone);
 
     var dAndD = new function() {
         var draggedTicketTitle;
@@ -38,30 +44,21 @@ $(function() {
         };
     };
 
-    boardRender();
-
-    columnRender("Kanban");
-
-    //init retrieve
-    function initRetrieve() {
-
-        if (retrieveTicketsToDo === null) {
-            localStorage.setItem("ticketsToDo", JSON.stringify( columnToDo.showAllTicket() ) );
-            retrieveTicketsToDo = JSON.parse( localStorage.getItem("ticketsToDo") );
-        } else {
-            for (var i = 0; i < retrieveTicketsToDo.length; i++ ) {
-                var title = retrieveTicketsToDo[i].title;
-                var description = retrieveTicketsToDo[i].description;
-                var newTicket = new Ticket(title, description);
-                columnToDo.addOneTicket(newTicket);
-            }
+    function initRetrievedDataRender(retrievedData, name, column) {
+        if (retrievedData === null) {
+            localStorage.setItem(name, JSON.stringify( column.showAllTicket() ) );
+            retrievedData = JSON.parse( localStorage.getItem(name) );
         }
 
-        ticketRender(columnToDo);
-    }
-    initRetrieve();
+        for (var i = 0; i < retrievedData.length; i++ ) {
+            var title = retrievedData[i].title;
+            var description = retrievedData[i].description;
+            var newTicket = new Ticket(title, description);
+            column.addOneTicket(newTicket);
+        }
 
-    console.log(retrieveTicketsToDo, columnToDo.showAllTicket());
+        ticketRender(column);
+    }
 
     function boardRender() {
         var boardName = newBoard.getBoardName();
@@ -98,15 +95,8 @@ $(function() {
                 var newSimpleTicket = newTicket.toSimpleTicket();
 
                 //localStorage
-                if (retrieveTicketsToDo === null) {
-                    localStorage.setItem("ticketsToDo", JSON.stringify( destinationColumn.showAllTicket() ) );
-                    retrieveTicketsToDo = JSON.parse( localStorage.getItem("ticketsToDo") );
-                    retrieveTicketsToDo.push(newSimpleTicket);
-                } else {
-                    retrieveTicketsToDo.push(newSimpleTicket);
-                    localStorage.setItem("ticketsToDo", JSON.stringify( retrieveTicketsToDo ) );
-                }
-                console.log(retrieveTicketsToDo);
+                retrieveTicketsToDo.push(newSimpleTicket);
+                localStorage.setItem("To_Do", JSON.stringify( retrieveTicketsToDo ) );
                 //localStorage
 
                 errorMsg = "";
@@ -125,8 +115,8 @@ $(function() {
     }
 
     function ticketRender(column) {
-        var whichBoard = column.getTitle().replace(/ /g, '_');
-        var $board = $("#" + whichBoard);
+        var whichColumn = column.getTitle().replace(/ /g, '_');
+        var $board = $("#" + whichColumn);
         $board.find("section").html("");
         var arrayOfTickets = column.showAllTicket();
         if ( arrayOfTickets.length > 0 ) {
@@ -153,6 +143,7 @@ $(function() {
             var columnOrigin = newBoard.findColumnByTicketTitle(ticketTitle);
             var ticketFound = columnOrigin.findTicketByTitle(ticketTitle);
             var columnFound = newBoard.findColumnByTitle(columnTitle); // need columnTitle
+            var newSimpleTicket = ticketFound.toSimpleTicket();
             if (columnFound) {
                 //check if reached Wip or not
                 if ( !columnFound.reachedWipOrNot() ) {
@@ -161,6 +152,27 @@ $(function() {
                     columnOrigin.removeTicketByTitle(ticketTitle);
                     ticketRenderFunc(columnOrigin);
                     ticketRenderFunc(columnFound);
+
+                    //localStorage
+                    //Origin
+                    var columnNameForLocalStorageOrigin = columnOrigin.getTitle().replace(/ /g, '_');
+                    var retrieveDataO = JSON.parse( localStorage.getItem(columnNameForLocalStorageOrigin) );
+                        var index;
+                        for (var i=0; i < retrieveDataO.length; i++) {
+                            if (retrieveDataO[i].title === ticketTitle ) {
+                                index = i;
+                            }
+                        }
+                    retrieveDataO.splice(index, 1);
+                    localStorage.setItem(columnNameForLocalStorageOrigin, JSON.stringify( retrieveDataO ) );
+
+                    //Found
+                    var columnNameForLocalStorageFound = columnFound.getTitle().replace(/ /g, '_');
+                    var retrieveDataF = JSON.parse( localStorage.getItem(columnNameForLocalStorageFound) );
+                    retrieveDataF.push(newSimpleTicket);
+                    localStorage.setItem(columnNameForLocalStorageFound, JSON.stringify( retrieveDataF ) );
+                    //localStorage
+
                     errorMsg = "";
                 } else {
                     errorMsg = "destination column reached WIP.";
@@ -184,6 +196,21 @@ $(function() {
                 columnDone.removeTicketByTitle(ticketTitle);
                 ticketRenderFunc(columnDone);
                 errorMsg = "";
+
+                //localStorage
+                var columnNameForLocalStorageOrigin = columnOrigin.getTitle().replace(/ /g, '_'); //"Done"
+                var retrieveDataO = JSON.parse( localStorage.getItem(columnNameForLocalStorageOrigin) );
+
+                    var index;
+                    for (var i=0; i < retrieveDataO.length; i++) {
+                        if (retrieveDataO[i].title === ticketTitle ) {
+                            index = i;
+                        }
+                    }
+                retrieveDataO.splice(index, 1);
+                localStorage.setItem(columnNameForLocalStorageOrigin, JSON.stringify( retrieveDataO ) );
+                //localStorage
+
             } else {
                 errorMsg = "Ticket can only be deleted from Done.";
                 console.log("Ticket can only be deleted from Done.");
@@ -193,6 +220,14 @@ $(function() {
             console.log("Ticket not found.");
         }
     }
+
+    boardRender();
+    columnRender("Kanban");
+
+    initRetrievedDataRender(retrieveTicketsToDo, "To_Do", columnToDo);
+    initRetrievedDataRender(retrieveTicketsInProgress, "In_Progress", columnInProgress);
+    initRetrievedDataRender(retrieveTicketsReview, "Review", columnReview);
+    initRetrievedDataRender(retrieveTicketsDone, "Done", columnDone);
 
     $("#create_a_ticket").on("click", function(e) {
         e.preventDefault();

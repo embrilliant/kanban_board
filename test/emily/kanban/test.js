@@ -183,11 +183,11 @@ suite("Find Ticket by Title in Column and then change Title and Description", fu
         columnToDo.addOneTicket(ticket1);
         columnToDo.addOneTicket(ticket2);
         columnToDo.addOneTicket(ticket3);
-        var ticketToBeFound = columnToDo.findTicketByTitle("Task 2");
-        ticketToBeFound.setTitle("New Title");
-        ticketToBeFound.setDescription("New Description.");
-        assert.equal(ticketToBeFound.getTitle(), "New Title");
-        assert.equal(ticketToBeFound.getDescription(), "New Description.");
+        var ticketFound = columnToDo.findTicketByTitle("Task 2");
+        ticketFound.setTitle("New Title");
+        ticketFound.setDescription("New Description.");
+        assert.equal(ticketFound.getTitle(), "New Title");
+        assert.equal(ticketFound.getDescription(), "New Description.");
     });
 });
 
