@@ -8,16 +8,18 @@ $(function() {
     var columnReview = new Column("Review", 5);
     var columnDone = new Column("Done", 5);
 
+    var localStorageKanban = new LocalStore();
+
     var columns = [columnToDo, columnInProgress, columnReview, columnDone];
 
     for (var i = 0; i < columns.length; i++) {
         newBoard.addOneColumnsToBoard(columns[i]);
     }
 
-    var retrieveTicketsToDo = JSON.parse( localStorage.getItem("To_Do") );
-    var retrieveTicketsInProgress = JSON.parse( localStorage.getItem("In_Progress") );
-    var retrieveTicketsReview = JSON.parse( localStorage.getItem("Review") );
-    var retrieveTicketsDone = JSON.parse( localStorage.getItem("Done") );
+    var retrieveTicketsToDo = localStorageKanban.retrieveData("To_Do");
+    var retrieveTicketsInProgress = localStorageKanban.retrieveData("In_Progress");
+    var retrieveTicketsReview = localStorageKanban.retrieveData("Review");
+    var retrieveTicketsDone = localStorageKanban.retrieveData("Done");
 
     console.log(retrieveTicketsToDo);
     console.log(retrieveTicketsInProgress);
@@ -44,10 +46,11 @@ $(function() {
         };
     };
 
-    function initRetrievedDataRender(retrievedData, name, column) {
+    function initRetrievedDataRender(retrievedData, itemName, column) {
+
         if (retrievedData === null) {
-            localStorage.setItem(name, JSON.stringify( column.showAllTicket() ) );
-            retrievedData = JSON.parse( localStorage.getItem(name) );
+            localStorageKanban.updateStorage( itemName, column.showAllTicket() );
+            retrievedData = localStorageKanban.retrieveData(itemName);
         }
 
         for (var i = 0; i < retrievedData.length; i++ ) {
@@ -95,8 +98,8 @@ $(function() {
                 var newSimpleTicket = newTicket.toSimpleTicket();
 
                 //localStorage
-                retrieveTicketsToDo.push(newSimpleTicket);
-                localStorage.setItem("To_Do", JSON.stringify( retrieveTicketsToDo ) );
+                localStorageKanban.addToArray(retrieveTicketsToDo, newSimpleTicket);
+                localStorageKanban.updateStorage("To_Do", retrieveTicketsToDo);
                 //localStorage
 
                 errorMsg = "";
@@ -154,23 +157,23 @@ $(function() {
                     ticketRenderFunc(columnFound);
 
                     //localStorage
-                    //Origin
+                    ///Origin
                     var columnNameForLocalStorageOrigin = columnOrigin.getTitle().replace(/ /g, '_');
-                    var retrieveDataO = JSON.parse( localStorage.getItem(columnNameForLocalStorageOrigin) );
-                        var index;
-                        for (var i=0; i < retrieveDataO.length; i++) {
-                            if (retrieveDataO[i].title === ticketTitle ) {
-                                index = i;
-                            }
-                        }
-                    retrieveDataO.splice(index, 1);
-                    localStorage.setItem(columnNameForLocalStorageOrigin, JSON.stringify( retrieveDataO ) );
+                    ////retrieve
+                    var retrieveDataO = localStorageKanban.retrieveData(columnNameForLocalStorageOrigin);
+                    ////remove
+                    localStorageKanban.removeDataInArray(retrieveDataO, ticketTitle);
+                    ////update
+                    localStorageKanban.updateStorage(columnNameForLocalStorageOrigin, retrieveDataO);
 
-                    //Found
+                    ///Found
                     var columnNameForLocalStorageFound = columnFound.getTitle().replace(/ /g, '_');
-                    var retrieveDataF = JSON.parse( localStorage.getItem(columnNameForLocalStorageFound) );
-                    retrieveDataF.push(newSimpleTicket);
-                    localStorage.setItem(columnNameForLocalStorageFound, JSON.stringify( retrieveDataF ) );
+                    ////retrieve
+                    var retrieveDataF = localStorageKanban.retrieveData(columnNameForLocalStorageFound);
+                    ////add
+                    localStorageKanban.addToArray(retrieveDataF, newSimpleTicket);
+                    ////update
+                    localStorageKanban.updateStorage(columnNameForLocalStorageFound, retrieveDataF);
                     //localStorage
 
                     errorMsg = "";
@@ -199,16 +202,12 @@ $(function() {
 
                 //localStorage
                 var columnNameForLocalStorageOrigin = columnOrigin.getTitle().replace(/ /g, '_'); //"Done"
-                var retrieveDataO = JSON.parse( localStorage.getItem(columnNameForLocalStorageOrigin) );
-
-                    var index;
-                    for (var i=0; i < retrieveDataO.length; i++) {
-                        if (retrieveDataO[i].title === ticketTitle ) {
-                            index = i;
-                        }
-                    }
-                retrieveDataO.splice(index, 1);
-                localStorage.setItem(columnNameForLocalStorageOrigin, JSON.stringify( retrieveDataO ) );
+                ///retrieve
+                var retrieveDataO = localStorageKanban.retrieveData(columnNameForLocalStorageOrigin);
+                ///remove
+                localStorageKanban.removeDataInArray(retrieveDataO, ticketTitle);
+                ////update
+                localStorageKanban.updateStorage(columnNameForLocalStorageOrigin, retrieveDataO);
                 //localStorage
 
             } else {
@@ -257,5 +256,11 @@ $(function() {
         deleteTicket(ticketTitle, ticketRender);
         $("#errorMsg").text(errorMsg);
     });
+
+    //bin
+    /*document.getElementById("bin").addEventListener("dragover", dAndD.allowDrop, false);
+    document.getElementById("bin").addEventListener("drop", function() {
+        dAndD.drop(event, moveTicket, ticketRender);
+    }, false);*/
 
 });

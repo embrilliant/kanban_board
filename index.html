@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Board</title>
 
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="css/style.css">
 
 </head>
@@ -34,11 +35,15 @@
                 Edit Description: <input type="text" name="new_description">
                 <button id="change_description">Change Description</button>-->
             </form>
-            <form id="form_edit">
-            </form>
+            <!--<form id="form_edit">
+            </form>-->
+            <div id="bin">
+                <i id="icon" class="fa fa-trash-o"></i>
+            </div>
         </div>
     </div>
     <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/emily/kanban/LocalStorage.js"></script>
     <script type="text/javascript" src="lib/emily/kanban/Board.js"></script>
     <script type="text/javascript" src="lib/emily/kanban/Column.js"></script>
     <script type="text/javascript" src="lib/emily/kanban/Ticket.js"></script>
