@@ -21,6 +21,23 @@ $(function() {
     var retrieveTicketsReview = localStorageKanban.retrieveData("Review");
     var retrieveTicketsDone = localStorageKanban.retrieveData("Done");
 
+    function initRetrievedDataRender(retrievedData, itemName, column) {
+
+        if (retrievedData === null) {
+            localStorageKanban.updateStorage( itemName, column.showAllTicket() );
+            retrievedData = localStorageKanban.retrieveData(itemName);
+        }
+
+        for (var i = 0; i < retrievedData.length; i++ ) {
+            var title = retrievedData[i].title;
+            var description = retrievedData[i].description;
+            var newTicket = new Ticket(title, description);
+            column.addOneTicket(newTicket);
+        }
+
+        ticketRender(column);
+    }
+
     console.log(retrieveTicketsToDo);
     console.log(retrieveTicketsInProgress);
     console.log(retrieveTicketsReview);
@@ -44,24 +61,20 @@ $(function() {
             moveTicketFunc(draggedTicketTitle, destinationColumnTitle, ticketRenderFunc);
             $("#errorMsg").text(errorMsg);
         };
+
+        this.drop = function(event, moveTicketFunc, ticketRenderFunc) {
+            event.preventDefault();
+            var $target = $(event.target);
+            var destinationColumnTitle = $target.siblings("header").find("span").text();
+            moveTicketFunc(draggedTicketTitle, destinationColumnTitle, ticketRenderFunc);
+            $("#errorMsg").text(errorMsg);
+        };
+
+        this.bin = function(event, deleteTicketFunc, ticketRenderFunc) {
+            deleteTicketFunc(draggedTicketTitle, ticketRenderFunc);
+            $("#errorMsg").text(errorMsg);
+        }
     };
-
-    function initRetrievedDataRender(retrievedData, itemName, column) {
-
-        if (retrievedData === null) {
-            localStorageKanban.updateStorage( itemName, column.showAllTicket() );
-            retrievedData = localStorageKanban.retrieveData(itemName);
-        }
-
-        for (var i = 0; i < retrievedData.length; i++ ) {
-            var title = retrievedData[i].title;
-            var description = retrievedData[i].description;
-            var newTicket = new Ticket(title, description);
-            column.addOneTicket(newTicket);
-        }
-
-        ticketRender(column);
-    }
 
     function boardRender() {
         var boardName = newBoard.getBoardName();
@@ -89,6 +102,7 @@ $(function() {
     }
 
     function createATicket(ticketTitle, ticketDescription, destinationColumn, ticketRenderFunc) {
+
         var ticketExists = newBoard.checkIfATicketExistOnBoard(ticketTitle);
         var reachedWipOrNot = destinationColumn.reachedWipOrNot();
         if (!reachedWipOrNot) {
@@ -98,10 +112,12 @@ $(function() {
                 var newSimpleTicket = newTicket.toSimpleTicket();
 
                 //localStorage
+                retrieveTicketsToDo = localStorageKanban.retrieveData("To_Do");
                 localStorageKanban.addToArray(retrieveTicketsToDo, newSimpleTicket);
                 localStorageKanban.updateStorage("To_Do", retrieveTicketsToDo);
                 //localStorage
 
+                ticketRenderFunc(columnToDo);
                 errorMsg = "";
             } else {
                 errorMsg = "Ticket already exists.";
@@ -111,7 +127,6 @@ $(function() {
             errorMsg = "destination column reached WIP.";
             console.log("reached WIP.");
         }
-        ticketRenderFunc(columnToDo);
         //1. create a ticket with Title and Description
         //2. set a destination column and add it to the array in that column
         //3. render the column that has the ticket
@@ -258,9 +273,9 @@ $(function() {
     });
 
     //bin
-    /*document.getElementById("bin").addEventListener("dragover", dAndD.allowDrop, false);
+    document.getElementById("bin").addEventListener("dragover", dAndD.allowDrop, false);
     document.getElementById("bin").addEventListener("drop", function() {
-        dAndD.drop(event, moveTicket, ticketRender);
-    }, false);*/
+        dAndD.bin(event, deleteTicket, ticketRender);
+    }, false);
 
 });
