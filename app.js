@@ -225,6 +225,7 @@ $(function() {
                 localStorageKanban.updateStorage(columnNameForLocalStorageOrigin, retrieveDataO);
                 //localStorage
 
+                animatedBin();
             } else {
                 errorMsg = "Ticket can only be deleted from Done.";
                 console.log("Ticket can only be deleted from Done.");
@@ -277,5 +278,35 @@ $(function() {
     document.getElementById("bin").addEventListener("drop", function() {
         dAndD.bin(event, deleteTicket, ticketRender);
     }, false);
+
+    function animatedBin() {
+        var $bin = $( document.getElementById("icon_bin") );
+
+        setTimeout(function(){
+            $bin.css({
+                "transform": "rotate(-30deg)"
+            });
+        }, 0);
+        setTimeout(function(){
+            $bin.css({
+                "transform": "rotate(20deg)"
+            });
+        }, 100);
+        setTimeout(function(){
+            $bin.css({
+                "transform": "rotate(-20deg)"
+            });
+        }, 200);
+        setTimeout(function(){
+            $bin.css({
+                "transform": "rotate(20deg)"
+            });
+        }, 300);
+        setTimeout(function(){
+            $bin.css({
+                "transform": "none"
+            });
+        }, 400);
+    }
 
 });

@@ -143,4 +143,22 @@ span.titleT {
     color: #6a6a6a;
 }
 
+#bin {
+    border: solid 4px rgba(255, 255, 255, 0.56);
+    height: 62%;
+    width: 20%;
+    padding-top: 1.2%;
+    float: right;
+    margin-right: 3%;
+    margin-top: 1.5%;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#icon_bin {
+    font-size: 5em;
+    color: rgba(100, 100, 100, 0.6);
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
 
