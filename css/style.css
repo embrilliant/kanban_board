@@ -1,5 +1,6 @@
 html {
-    background-image: url("../images/cake.jpg");
+    background-image: url("http://2013.jsconf.eu/img/js.eu.png");
+    /*background-image: url("../images/cake.jpg");*/
     background-size: cover;
     height: 100%;
     margin: 0;
@@ -45,6 +46,8 @@ body {
     border: solid 4px #ffffff;
     border-radius: 5px;
     box-shadow: 2px 5px 20px -2px rgba(100, 100, 100, 0.8);
+    /*background-image: url("");*/
+    background-size: cover;
 }
 
 #forms {

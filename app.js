@@ -36,6 +36,11 @@ $(function() {
         }
 
         ticketRender(column);
+
+        var bgImgURL = localStorageKanban.retrieveData("bgImgURL");
+        if (bgImgURL) {
+            document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ bgImgURL +"')";
+        }
     }
 
     console.log(retrieveTicketsToDo);
@@ -73,6 +78,38 @@ $(function() {
         this.bin = function(event, deleteTicketFunc, ticketRenderFunc) {
             deleteTicketFunc(draggedTicketTitle, ticketRenderFunc);
             $("#errorMsg").text(errorMsg);
+        };
+
+        this.imgDrop = function(event) {
+            event.preventDefault(); // Cancel the default browser action.
+            var file = event.dataTransfer.files[0] ;
+            console.log(file);
+            //$("video").find("source").attr("src", file.name );
+            var reader = new FileReader();
+            if (file) {
+                reader.readAsDataURL(file);
+                reader.onload = loaded;
+                /*reader.onload = function(event) {
+                    $("video").attr("src", "videos/"+file.name );
+                    console.log(event.target);
+                }*/
+            }
+        };
+
+        function loaded(event) {
+            var dataURL = event.target.result;
+            document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ dataURL +"')";
+
+            //experiment
+            //var videoDiv = document.getElementsByTagName("video")[0];
+            //console.log(videoDiv);
+            /*$("video").find("source").attr("src", dataURL );*/
+            //videoDiv.getElementsByTagName("source").src = dataURL;
+            //
+
+            localStorageKanban.updateStorage("bgImgURL", dataURL);
+            console.log(dataURL);
+            console.log(event.target);
         }
     };
 
@@ -81,6 +118,9 @@ $(function() {
         var cssClass = newBoard.constructor.name.toLowerCase();
         var $newDiv = $('<div/>',{ id: boardName, "class": cssClass});
         $("#container").append($newDiv);
+        var theBoard = $newDiv.get(0);
+        theBoard.addEventListener("drop", dAndD.imgDrop, false);
+        theBoard.addEventListener("dragover", dAndD.allowDrop);
     }
 
     function columnRender(boardName) {
@@ -273,6 +313,11 @@ $(function() {
         $("#errorMsg").text(errorMsg);
     });
 
+    $("#dltBgImg").on("click", function() {
+        localStorageKanban.deleteStorageItem("bgImgURL");
+        document.getElementsByClassName("board")[0].style.backgroundImage = "none";
+    });
+
     //bin
     document.getElementById("bin").addEventListener("dragover", dAndD.allowDrop, false);
     document.getElementById("bin").addEventListener("drop", function() {
@@ -308,5 +353,7 @@ $(function() {
             });
         }, 400);
     }
+//////////////////////////////////////////////////////////////////////////////
+
 
 });
