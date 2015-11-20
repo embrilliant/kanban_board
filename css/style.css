@@ -1,6 +1,6 @@
 html {
-    background-image: url("http://2013.jsconf.eu/img/js.eu.png");
-    /*background-image: url("../images/cake.jpg");*/
+    /*background-image: url("http://2013.jsconf.eu/img/js.eu.png");*/
+    background-image: url("../images/cake.jpg");
     background-size: cover;
     height: 100%;
     margin: 0;
@@ -19,7 +19,7 @@ body {
     height: 95%;
 }
 
-#container {
+#board_container {
     width: 100%;
     height: 80%;
 }
@@ -46,7 +46,7 @@ body {
     border: solid 4px #ffffff;
     border-radius: 5px;
     box-shadow: 2px 5px 20px -2px rgba(100, 100, 100, 0.8);
-    /*background-image: url("");*/
+    background-image: url("http://2013.jsconf.eu/img/js.eu.png");
     background-size: cover;
 }
 
@@ -128,10 +128,10 @@ section {
     font-weight: 500;
     text-align: left;
     text-shadow: none;
-    background-color: snow;
+    background-color: rgba(255, 255, 255, 0.9);
     width: 66%;
     height: 15%;
-    box-shadow: 1px 1px 2px 0px rgba(50, 50, 50, 0.36);
+    box-shadow: 1px 1px 5px 0px rgba(60, 60, 60, 0.5);
     margin: 2%;
     border-radius: 3px;
 }
@@ -180,4 +180,10 @@ span.titleT {
     .ticket {
         font-size: small;
     }
+}
+
+#selectFiles {
+}
+
+#fileButton {
 }

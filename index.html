@@ -12,12 +12,12 @@
 </head>
 <body>
     <div id="wrap">
-        <div id="container">
+        <div id="board_container">
             <div id="vidBg">
-                <video autoplay src="videos/duck.mp4" type="video/mp4" muted="muted" loop>
-                    <!--<source src="videos/duck.mp4" type="video/mp4">-->
+                <!--<video autoplay src="videos/duck.mp4" muted="muted" loop>
+                    &lt;!&ndash;<source src="videos/duck.mp4" type="video/mp4">&ndash;&gt;
                     Your browser does not support HTML5 videos. Please update your browser.
-                </video>
+                </video>-->
             </div>
         </div>
         <div id="forms">
@@ -31,6 +31,7 @@
                 <button id="create_a_ticket">Create A Ticket</button>
                 <button id="move_ticket">Move this Ticket</button>
                 <button id="delete_ticket">Delete this Ticket from Done</button>
+                <button id="clear_ticket">Clear all tickets</button>
                 <br>
                 Error Message: <span id="errorMsg"></span>
                 <!--<br>
@@ -44,7 +45,9 @@
             </div>
             <!--<form id="upload">
             </form>-->
-            <input type="file" id="fileWindowOpen" accept="image/*">
+            <input type="file" id="selectFiles" accept="image/*">
+            <label id="fileButton" for="selectFiles">Choose an image file from your computer as the board's background or drag an image file directly from your desktop and drop it on the board</label>
+            <!--<input type="file" id="fileWindowOpen" >-->
             <button id="dltBgImg">Delete background image</button>
         </div>
     </div>

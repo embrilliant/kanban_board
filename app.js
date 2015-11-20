@@ -79,47 +79,66 @@ $(function() {
             deleteTicketFunc(draggedTicketTitle, ticketRenderFunc);
             $("#errorMsg").text(errorMsg);
         };
+    };
 
-        this.imgDrop = function(event) {
+    var bgImgAction = new function() {
+
+        this.imgDropAndDisplay = function(event) {
             event.preventDefault(); // Cancel the default browser action.
-            var file = event.dataTransfer.files[0] ;
-            console.log(file);
-            //$("video").find("source").attr("src", file.name );
+            var file = event.dataTransfer.files[0];
             var reader = new FileReader();
+
             if (file) {
                 reader.readAsDataURL(file);
                 reader.onload = loaded;
+
+                //for video
                 /*reader.onload = function(event) {
-                    $("video").attr("src", "videos/"+file.name );
-                    console.log(event.target);
-                }*/
+                     $("video").attr("src", "videos/"+file.name );
+                     console.log(event.target);
+                 }*/
             }
+        };
+
+        this.imgSelectAndDisplay= function(event) { //ref: http://www.html5rocks.com/en/tutorials/file/dndfiles/#toc-selecting-files-dnd
+            var file = event.target.files[0];
+            var reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = loaded;
+
         };
 
         function loaded(event) {
             var dataURL = event.target.result;
             document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ dataURL +"')";
 
-            //experiment
-            //var videoDiv = document.getElementsByTagName("video")[0];
-            //console.log(videoDiv);
-            /*$("video").find("source").attr("src", dataURL );*/
-            //videoDiv.getElementsByTagName("source").src = dataURL;
-            //
-
             localStorageKanban.updateStorage("bgImgURL", dataURL);
-            console.log(dataURL);
-            console.log(event.target);
         }
     };
+
+    function handleEvent(event) {
+        var file = event.target.files[0];
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = loaded;
+    }
+
+    function loaded(event) {
+        var dataURL = event.target.result;
+        document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ dataURL +"')";
+
+        /*localStorageKanban.updateStorage("bgImgURL", dataURL);
+         console.log(dataURL);
+         console.log(event.target);*/
+    }
 
     function boardRender() {
         var boardName = newBoard.getBoardName();
         var cssClass = newBoard.constructor.name.toLowerCase();
         var $newDiv = $('<div/>',{ id: boardName, "class": cssClass});
-        $("#container").append($newDiv);
+        $("#board_container").append($newDiv);
         var theBoard = $newDiv.get(0);
-        theBoard.addEventListener("drop", dAndD.imgDrop, false);
+        theBoard.addEventListener("drop", bgImgAction.imgDropAndDisplay, false);
         theBoard.addEventListener("dragover", dAndD.allowDrop);
     }
 
@@ -313,10 +332,26 @@ $(function() {
         $("#errorMsg").text(errorMsg);
     });
 
+    $("#clear_ticket").on("click", function(event) {
+        event.preventDefault();
+
+        for (var i = 0; i < columns.length; i++) {
+            columns[i].removeAllTickets();
+            ticketRender(columns[i]);
+        }
+
+        localStorageKanban.deleteStorageItem("To_Do");
+        localStorageKanban.deleteStorageItem("In_Progress");
+        localStorageKanban.deleteStorageItem("Review");
+        localStorageKanban.deleteStorageItem("Done");
+    });
+
     $("#dltBgImg").on("click", function() {
         localStorageKanban.deleteStorageItem("bgImgURL");
         document.getElementsByClassName("board")[0].style.backgroundImage = "none";
     });
+
+    $("#selectFiles").on("change", bgImgAction.imgSelectAndDisplay);
 
     //bin
     document.getElementById("bin").addEventListener("dragover", dAndD.allowDrop, false);
@@ -353,7 +388,5 @@ $(function() {
             });
         }, 400);
     }
-//////////////////////////////////////////////////////////////////////////////
-
 
 });
