@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Board</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ==" crossorigin="anonymous">
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js" integrity="sha512-K1qjQ+NcF2TYO/eI3M6v8EiNYZfA95pQumfvcVrTHtwQVDG+aHRqLi/ETn2uB+1JqwYqVG3LIvdm9lj6imS/pQ==" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style-.css">
+
+</head>
+<body>
+    <div id="wrap" class="">
+        <div id="container">
+            <div id="vidBg">
+                <!--<video autoplay muted="muted" loop>
+                    <source src="videos/duck.mp4" type="video/mp4">
+                    Your browser does not support HTML5 videos. Please update your browser.
+                </video>-->
+            </div>
+            <div id="main_board" class="container-fluid">
+
+            </div>
+        </div>
+        <div id="forms">
+            <form id="form_ticket">
+                Ticket Title: <input type="text" name="ticket_title">
+                <br>
+                Ticket Description: <input type="text" name="ticket_description">
+                <br>
+                Destination Column Title: <input type="text" name="column_title" placeholder="New ticket goes to To Do">
+                <br>
+                <button id="create_a_ticket">Create A Ticket</button>
+                <button id="move_ticket">Move this Ticket</button>
+                <button id="delete_ticket">Delete this Ticket from Done</button>
+                <br>
+                Error Message: <span id="errorMsg"></span>
+                <!--<br>
+                Edit Description: <input type="text" name="new_description">
+                <button id="change_description">Change Description</button>-->
+            </form>
+            <!--<form id="form_edit">
+            </form>-->
+            <div id="bin">
+                <i id="icon_bin" class="fa fa-trash-o"></i>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/emily/kanban/LocalStorage.js"></script>
+    <script type="text/javascript" src="lib/emily/kanban/Board.js"></script>
+    <script type="text/javascript" src="lib/emily/kanban/Column.js"></script>
+    <script type="text/javascript" src="lib/emily/kanban/Ticket.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+</body>
+</html>

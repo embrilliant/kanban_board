@@ -44,10 +44,10 @@ $(function() {
 
         ticketRender(column);
 
-        var bgImgURL = localStorageKanban.retrieveData("bgImgURL");
+        /*var bgImgURL = localStorageKanban.retrieveData("bgImgURL");
         if (bgImgURL) {
             document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ bgImgURL +"')";
-        }
+        }*/
     }
 
     console.log(retrieveTicketsToDo);
@@ -94,33 +94,33 @@ $(function() {
             event.preventDefault(); // Cancel the default browser action.
             var file = event.dataTransfer.files[0];
             var reader = new FileReader();
-
+            console.log("dragged");
             if (file) {
-                reader.readAsDataURL(file);
-                reader.onload = loaded;
+                //reader.readAsDataURL(file);
+                //reader.onload = loaded;
 
                 //for video
-                /*reader.onload = function(event) {
-                     $("video").attr("src", "videos/"+file.name );
-                     console.log(event.target);
-                 }*/
+                reader.onload = function(event) {
+                    $("video").attr("src", "videos/"+file.name );
+                    console.log(event.target);
+                }
             }
         };
 
-        this.imgSelectAndDisplay= function(event) { //ref: http://www.html5rocks.com/en/tutorials/file/dndfiles/#toc-selecting-files-dnd
+        /*this.imgSelectAndDisplay= function(event) { //ref: http://www.html5rocks.com/en/tutorials/file/dndfiles/#toc-selecting-files-dnd
             var file = event.target.files[0];
             var reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = loaded;
 
-        };
+        };*/
 
-        function loaded(event) {
+        /*function loaded(event) {
             var dataURL = event.target.result;
             document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ dataURL +"')";
 
             localStorageKanban.updateStorage("bgImgURL", dataURL);
-        }
+        }*/
     };
 
     /*function handleEvent(event) {

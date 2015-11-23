@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Board</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
+</head>
+<body>
+    <div id="wrap">
+        <div id="board_container">
+            <div id="vidBg">
+                <video autoplay src="videos/duck.mp4" muted="muted" loop>
+                    <!--<source src="videos/duck.mp4" type="video/mp4">-->
+                    Your browser does not support HTML5 videos. Please update your browser.
+                </video>
+            </div>
+        </div>
+        <div id="forms">
+            <form id="form_ticket">
+                Ticket Title: <input type="text" name="ticket_title">
+                <br>
+                Ticket Description: <input type="text" name="ticket_description">
+                <br>
+                Destination Column Title: <input type="text" name="column_title" placeholder="New ticket goes to To Do">
+                <br>
+                <button id="create_a_ticket">Create A Ticket</button>
+                <button id="move_ticket">Move this Ticket</button>
+                <button id="delete_ticket">Delete this Ticket from Done</button>
+                <button id="clear_ticket">Clear all tickets</button>
+                <br>
+                Error Message: <span id="errorMsg"></span>
+                <!--<br>
+                Edit Description: <input type="text" name="new_description">
+                <button id="change_description">Change Description</button>-->
+            </form>
+            <!--<form id="form_edit">
+            </form>-->
+            <div id="bin">
+                <i id="icon_bin" class="fa fa-trash-o"></i>
+            </div>
+            <!--<form id="upload">
+            </form>-->
+            <input type="file" id="selectFiles" accept="image/*">
+            <label id="fileButton" for="selectFiles">Choose an image file from your computer as the board's background or drag an image file directly from your desktop and drop it on the board</label>
+            <!--<input type="file" id="fileWindowOpen" >-->
+            <button id="dltBgImg">Delete background image</button>
+        </div>
+    </div>
+    <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/emily/kanban/LocalStorage.js"></script>
+    <script type="text/javascript" src="lib/emily/kanban/Board.js"></script>
+    <script type="text/javascript" src="lib/emily/kanban/Column.js"></script>
+    <script type="text/javascript" src="lib/emily/kanban/Ticket.js"></script>
+    <script type="text/javascript" src="app.js"></script>
+</body>
+</html>
