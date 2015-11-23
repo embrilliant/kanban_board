@@ -1,4 +1,4 @@
-## Kanban_Board
+# Kanban Board
 
 #### Features
 - Drag and drop image file from desktop to change the background of the board
