@@ -23,8 +23,8 @@ $(function() {
 
     function dataReRender(itemName, column) {
         //if (retrievedData === null) {
-            localStorageKanban.updateStorage( itemName, column.showAllTicket() );
-            //retrievedData = localStorageKanban.retrieveData(itemName);
+        localStorageKanban.updateStorage( itemName, column.showAllTicket() );
+        //retrievedData = localStorageKanban.retrieveData(itemName);
         //}
     }
 
@@ -94,16 +94,15 @@ $(function() {
             event.preventDefault(); // Cancel the default browser action.
             var file = event.dataTransfer.files[0];
             var reader = new FileReader();
-            console.log("dragged");
+
             if (file) {
                 //reader.readAsDataURL(file);
                 //reader.onload = loaded;
 
                 //for video
-                reader.onload = function(event) {
-                    $("video").attr("src", "videos/"+file.name );
-                    console.log(event.target);
-                }
+                reader.onload = (function() {
+                 $("video").attr("src", "videos/"+file.name );
+                 })();
             }
         };
 
@@ -113,9 +112,9 @@ $(function() {
             reader.readAsDataURL(file);
             reader.onload = loaded;
 
-        };*/
+        };
 
-        /*function loaded(event) {
+        function loaded(event) {
             var dataURL = event.target.result;
             document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ dataURL +"')";
 
@@ -124,20 +123,20 @@ $(function() {
     };
 
     /*function handleEvent(event) {
-        var file = event.target.files[0];
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = loaded;
-    }*/
+     var file = event.target.files[0];
+     var reader = new FileReader();
+     reader.readAsDataURL(file);
+     reader.onload = loaded;
+     }*/
 
     /*function loaded(event) {
-        var dataURL = event.target.result;
-        document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ dataURL +"')";
+     var dataURL = event.target.result;
+     document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ dataURL +"')";
 
-        *//*localStorageKanban.updateStorage("bgImgURL", dataURL);
-         console.log(dataURL);
-         console.log(event.target);*//*
-    }*/
+     *//*localStorageKanban.updateStorage("bgImgURL", dataURL);
+     console.log(dataURL);
+     console.log(event.target);*//*
+     }*/
 
     function boardRender() {
         var boardName = newBoard.getBoardName();
@@ -181,9 +180,9 @@ $(function() {
                 retrieveTicketsToDo = localStorageKanban.retrieveData("To_Do");
                 console.log(retrieveTicketsToDo);
                 /*if (retrieveTicketsToDo === null) {
-                    localStorageKanban.updateStorage("To_Do", destinationColumn.getAllSimpleTickets() );
-                    retrieveTicketsToDo = localStorageKanban.retrieveData("To_Do");
-                }*/
+                 localStorageKanban.updateStorage("To_Do", destinationColumn.getAllSimpleTickets() );
+                 retrieveTicketsToDo = localStorageKanban.retrieveData("To_Do");
+                 }*/
                 console.log(retrieveTicketsToDo);
                 localStorageKanban.addToArray(retrieveTicketsToDo, newSimpleTicket);
                 localStorageKanban.updateStorage("To_Do", retrieveTicketsToDo);
@@ -215,8 +214,8 @@ $(function() {
                 var ticketDescription = arrayOfTickets[i].getDescription();
                 var cssClass = arrayOfTickets[i].constructor.name.toLowerCase();
                 var $newDiv = $('<div/>', {"class": cssClass,
-                                            "draggable": "true"
-                                            });
+                    "draggable": "true"
+                });
                 $newDiv.html("Title: <span>"+ ticketTitle +"</span><br>Description: "+ ticketDescription);
                 $board.find("section").append($newDiv);
                 var newDiv = $newDiv.get(0);//
@@ -349,8 +348,8 @@ $(function() {
         event.preventDefault();
 
         for (var i = 0; i < columns.length; i++) {
-             columns[i].removeAllTickets();
-             ticketRender(columns[i]);
+            columns[i].removeAllTickets();
+            ticketRender(columns[i]);
         }
 
         localStorageKanban.deleteStorageItem("To_Do");
