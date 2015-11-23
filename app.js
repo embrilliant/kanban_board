@@ -22,10 +22,7 @@ $(function() {
     var retrieveTicketsDone = localStorageKanban.retrieveData("Done");
 
     function dataReRender(itemName, column) {
-        //if (retrievedData === null) {
-            localStorageKanban.updateStorage( itemName, column.showAllTicket() );
-            //retrievedData = localStorageKanban.retrieveData(itemName);
-        //}
+        localStorageKanban.updateStorage( itemName, column.showAllTicket() );
     }
 
     function initRetrievedDataRender(retrievedData, itemName, column) {
@@ -71,7 +68,7 @@ $(function() {
             var $target = $(event.target);
             var destinationColumnTitle = $target.siblings("header").find("span").text();
             moveTicketFunc(draggedTicketTitle, destinationColumnTitle, ticketRenderFunc);
-            $("#errorMsg").text(errorMsg);
+            $("#errorMsg").text(errorMsg).fadeIn(200);
         };
 
         this.drop = function(event, moveTicketFunc, ticketRenderFunc) {
@@ -79,12 +76,12 @@ $(function() {
             var $target = $(event.target);
             var destinationColumnTitle = $target.siblings("header").find("span").text();
             moveTicketFunc(draggedTicketTitle, destinationColumnTitle, ticketRenderFunc);
-            $("#errorMsg").text(errorMsg);
+            $("#errorMsg").text(errorMsg).fadeIn(200);
         };
 
         this.bin = function(event, deleteTicketFunc, ticketRenderFunc) {
             deleteTicketFunc(draggedTicketTitle, ticketRenderFunc);
-            $("#errorMsg").text(errorMsg);
+            $("#errorMsg").text(errorMsg).fadeIn(200);
         };
     };
 
@@ -327,7 +324,7 @@ $(function() {
         } else {
             errorMsg = "Please enter title and description.";
         }
-        $("#errorMsg").text(errorMsg);
+        $("#errorMsg").text(errorMsg).fadeIn(200);
     });
 
     $("#move_ticket").on("click", function(event) {
@@ -335,14 +332,14 @@ $(function() {
         var ticketTitle = $("input[name='ticket_title']").val();
         var columnTitle = $("input[name='column_title']").val();
         moveTicket(ticketTitle, columnTitle, ticketRender);
-        $("#errorMsg").text(errorMsg);
+        $("#errorMsg").text(errorMsg).fadeIn(200);
     });
 
     $("#delete_ticket").on("click", function(event) {
         event.preventDefault();
         var ticketTitle = $("input[name='ticket_title']").val();
         deleteTicket(ticketTitle, ticketRender);
-        $("#errorMsg").text(errorMsg);
+        $("#errorMsg").text(errorMsg).fadeIn(200);
     });
 
     $("#clear_ticket").on("click", function(event) {

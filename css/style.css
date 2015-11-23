@@ -16,12 +16,13 @@ body {
 #wrap {
     margin: auto;
     width: 90%;
-    height: 95%;
+    height: 98%;
+    /*background-color: rgba(255, 196, 174, 0.66);*/
 }
 
 #board_container {
     width: 100%;
-    height: 80%;
+    height: 78%;
 }
 
 #vidBg {
@@ -50,40 +51,22 @@ body {
     background-size: cover;
 }
 
-#forms {
-    width: 99%;
-    height: 18%;
-    margin-top: 1.5%;
-    padding: 0.5%;
+#control {
+    width: 100%;
+    height: 17%;
+    margin-top: 1.2%;
     border-radius: 5px;
     border: solid 4px #ffffff;
     text-shadow: 1px 1px 5px rgba(10, 10, 10, 0.5);
-    background-color: rgba(221, 221, 221, 0.25);
+    /*background-color: rgba(221, 221, 221, 0.25);*/
+    background-color: rgba(255, 0, 148, 0.66);
     box-shadow: inset 0px 0px 6px 0px rgba(70, 70, 70, 0.7), 2px 5px 20px -2px rgba(100, 100, 100, 0.8);
 }
 
 #form_ticket {
-    width: 70%;
     display: inline-block;
     float: left;
-}
-
-#bin {
-    border: solid 4px rgba(255, 255, 255, 0.56);
-    height: 70%;
-    width: 20%;
-    padding-top: 1.5%;
-    float: right;
-    margin-right: 3%;
-    margin-top: 1%;
-    border-radius: 5px;
-    text-align: center;
-}
-
-#icon {
-    font-size: 5em;
-    color: rgba(100, 100, 100, 0.6);
-    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+    background-color: rgba(120, 68, 114, 0.66);
 }
 
 input {
@@ -142,8 +125,10 @@ span.titleT {
     float: left;
 }
 
-#errorMsg {
-    color: #6a6a6a;
+#icon {
+    font-size: 5em;
+    color: rgba(100, 100, 100, 0.6);
+    text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
 }
 
 #bin {
@@ -156,12 +141,41 @@ span.titleT {
     margin-top: 1.5%;
     border-radius: 5px;
     text-align: center;
+    background-color: rgba(120, 120, 120, 0.66);
 }
 
 #icon_bin {
     font-size: 5em;
     color: rgba(100, 100, 100, 0.6);
     text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+#bgImage {
+    display: inline-block;
+    background-color: rgba(252, 255, 165, 0.66);
+}
+
+#control_sections {
+    float: left;
+    width: 73%;
+    height: 100%;
+    background-color: rgba(168, 153, 149, 0.85);
+    overflow: scroll
+}
+
+#errorMsg {
+    height: 2.3%;
+    width: 100%;
+    margin-top: 0.35%;
+    border: solid 4px #ffffff;
+    border-radius: 5px;
+    font-size: 1em;
+    font-weight: 600;
+    color: #6E5353;
+    text-shadow: 1px 1px 3px rgba(10, 10, 10, 0.5);
+    box-shadow: inset 0px 0px 6px 0px rgba(70, 70, 70, 0.6), 2px 5px 20px -2px rgba(100, 100, 100, 0.8);
+    display: none;
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 @media screen and (max-width: 550px) {
@@ -180,10 +194,4 @@ span.titleT {
     .ticket {
         font-size: small;
     }
-}
-
-#selectFiles {
-}
-
-#fileButton {
 }
