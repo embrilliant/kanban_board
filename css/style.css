@@ -1,6 +1,7 @@
 html {
     /*background-image: url("http://2013.jsconf.eu/img/js.eu.png");*/
-    background-image: url("../images/cake.jpg");
+    /*background-image: url("../images/cake.jpg");*/
+    background: linear-gradient(125deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 13%, rgba(173,173,173,1) 100%); /* w3c */;
     background-size: cover;
     height: 100%;
     margin: 0;
@@ -22,7 +23,8 @@ body {
 
 #board_container {
     width: 100%;
-    height: 78%;
+    height: 77%;
+    /*background-color: rgba(255, 199, 155, 0.60);*/
 }
 
 #vidBg {
@@ -44,29 +46,35 @@ body {
 .board {
     width: 100%;
     height: 100%;
-    border: solid 4px #ffffff;
+    border: solid 0.35em #ffffff;
     border-radius: 5px;
     box-shadow: 2px 5px 20px -2px rgba(100, 100, 100, 0.8);
-    background-image: url("http://2013.jsconf.eu/img/js.eu.png");
+    /*background-image: url("http://2013.jsconf.eu/img/js.eu.png");*/
     background-size: cover;
 }
 
 #control {
-    width: 100%;
+    width: 100.5%;
     height: 17%;
-    margin-top: 1.2%;
+    margin-top: 1.5%;
     border-radius: 5px;
-    border: solid 4px #ffffff;
+    /*border: solid 4px #ffffff;*/
     text-shadow: 1px 1px 5px rgba(10, 10, 10, 0.5);
-    /*background-color: rgba(221, 221, 221, 0.25);*/
-    background-color: rgba(255, 0, 148, 0.66);
-    box-shadow: inset 0px 0px 6px 0px rgba(70, 70, 70, 0.7), 2px 5px 20px -2px rgba(100, 100, 100, 0.8);
+    color: white;
+    /*box-shadow: inset 0px 0px 6px 0px rgba(70, 70, 70, 0.7), 2px 5px 20px -2px rgba(100, 100, 100, 0.8);*/
 }
 
 #form_ticket {
     display: inline-block;
+    width: 67%;
+    height: 95%;
     float: left;
-    background-color: rgba(120, 68, 114, 0.66);
+    padding: 0.5%;
+    border-radius: 5px;
+    /*border: solid 0.3em #ffffff;*/
+    font-weight: 600;
+    box-shadow: 1px 1px 20px -2px rgba(50, 50, 50, 0.8);
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 input {
@@ -131,17 +139,28 @@ span.titleT {
     text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
 }
 
-#bin {
-    border: solid 4px rgba(255, 255, 255, 0.56);
-    height: 62%;
-    width: 20%;
-    padding-top: 1.2%;
-    float: right;
-    margin-right: 3%;
-    margin-top: 1.5%;
+#bin_frame {
     border-radius: 5px;
+    /*border: solid 0.3em #ffffff;*/
+    height: 102%;
+    width: 25%;
+    float: right;
     text-align: center;
-    background-color: rgba(120, 120, 120, 0.66);
+    box-shadow: 1px 1px 20px -2px rgba(50, 50, 50, 0.8);
+    background-color: rgba(0, 0, 0, 0.3);
+}
+
+#bin {
+    border: solid 0.3em rgba(255, 255, 255, 0.56);
+    height: 67%;
+    width: 75%;
+    padding-top: 1.2%;
+    text-align: center;
+    margin-right: 3%;
+    margin-top: 5.5%;
+    margin-left: 10.5%;
+    border-radius: 5px;
+    background-color: rgba(220, 220, 220, 0.2);
 }
 
 #icon_bin {
@@ -152,30 +171,45 @@ span.titleT {
 
 #bgImage {
     display: inline-block;
-    background-color: rgba(252, 255, 165, 0.66);
+    width: 30%;
+    height: 95%;
+    margin-left: 1%;
+    padding: 0.5%;
+    border-radius: 5px;
+    /*border: solid 0.3em #ffffff;*/
+    box-shadow: 1px 1px 20px -2px rgba(50, 50, 50, 0.8);
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 #control_sections {
     float: left;
-    width: 73%;
+    width: 74%;
     height: 100%;
-    background-color: rgba(168, 153, 149, 0.85);
-    overflow: scroll
+    /*background-color: rgba(168, 153, 149, 0.85);*/
 }
 
 #errorMsg {
-    height: 2.3%;
+    height: auto;
     width: 100%;
-    margin-top: 0.35%;
-    border: solid 4px #ffffff;
+    margin-top: 0.68%;
+    /*border: solid 0.3em #ffffff;*/
     border-radius: 5px;
     font-size: 1em;
     font-weight: 600;
     color: #6E5353;
     text-shadow: 1px 1px 3px rgba(10, 10, 10, 0.5);
-    box-shadow: inset 0px 0px 6px 0px rgba(70, 70, 70, 0.6), 2px 5px 20px -2px rgba(100, 100, 100, 0.8);
+    /*box-shadow: inset 0px 0px 6px 0px rgba(70, 70, 70, 0.6), 2px 5px 20px -2px rgba(100, 100, 100, 0.8);*/
     display: none;
     background-color: rgba(255, 255, 255, 0.5);
+}
+
+button, input {
+    border-radius: 5px;
+    background-color: rgba(221, 221, 221, 0.80);
+}
+
+input[type="file"] {
+    background-color: transparent;
 }
 
 @media screen and (max-width: 550px) {
@@ -193,5 +227,8 @@ span.titleT {
     }
     .ticket {
         font-size: small;
+    }
+    #bin_frame, #control_sections, #form_ticket, #bgImage {
+        width: 100%;
     }
 }

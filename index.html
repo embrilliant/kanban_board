@@ -21,6 +21,13 @@
             </div>
         </div>
         <div id="control">
+
+            <div id="bin_frame">
+                <div id="bin">
+                    <i id="icon_bin" class="fa fa-trash-o"></i>
+                </div>
+            </div>
+
             <div id="control_sections">
                 <form id="form_ticket">
                     Ticket Title: <input type="text" name="ticket_title">
@@ -34,24 +41,19 @@
                     <button id="delete_ticket">Delete this Ticket from Done</button>
                     <button id="clear_ticket">Clear all tickets</button>
                     <br>
-
+                    <div id="errorMsg">
+                    </div>
 
                 </form>
 
                 <div id="bgImage">
                     <input type="file" id="selectFiles" accept="image/*">
-                    <label id="fileButton" for="selectFiles">Choose an image file or drag one from your computer and drop it on the board to change the background image.</label>
+                    <label id="fileButton" for="selectFiles">Choose an image file or drag one from your computer and drop it on the board to change the background.</label>
+                    <br>
                     <button id="dltBgImg">Delete background image</button>
                 </div>
             </div>
 
-            <div id="bin">
-                <i id="icon_bin" class="fa fa-trash-o"></i>
-            </div>
-
-        </div>
-
-        <div id="errorMsg">
         </div>
 
     </div>
