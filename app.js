@@ -21,7 +21,7 @@ $(function() {
     var retrieveTicketsReview = localStorageKanban.retrieveData("Review");
     var retrieveTicketsDone = localStorageKanban.retrieveData("Done");
 
-    function dataReRender(itemName, column) {
+    function localDataUpdate(itemName, column) {
         localStorageKanban.updateStorage( itemName, column.showAllTicket() );
     }
 
@@ -71,14 +71,6 @@ $(function() {
             $("#errorMsg").text(errorMsg).fadeIn(200);
         };
 
-        this.drop = function(event, moveTicketFunc, ticketRenderFunc) {
-            event.preventDefault();
-            var $target = $(event.target);
-            var destinationColumnTitle = $target.siblings("header").find("span").text();
-            moveTicketFunc(draggedTicketTitle, destinationColumnTitle, ticketRenderFunc);
-            $("#errorMsg").text(errorMsg).fadeIn(200);
-        };
-
         this.bin = function(event, deleteTicketFunc, ticketRenderFunc) {
             deleteTicketFunc(draggedTicketTitle, ticketRenderFunc);
             $("#errorMsg").text(errorMsg).fadeIn(200);
@@ -86,6 +78,13 @@ $(function() {
     };
 
     var bgImgAction = new function() {
+
+        function loaded(event) {
+            var dataURL = event.target.result;
+            document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ dataURL +"')";
+
+            localStorageKanban.updateStorage("bgImgURL", dataURL);
+        }
 
         this.imgDropAndDisplay = function(event) {
             event.preventDefault(); // Cancel the default browser action.
@@ -104,7 +103,7 @@ $(function() {
             }
         };
 
-        this.imgSelectAndDisplay= function(event) { //ref: http://www.html5rocks.com/en/tutorials/file/dndfiles/#toc-selecting-files-dnd
+        this.imgSelectAndDisplay= function(event) { //inspiration ref: http://www.html5rocks.com/en/tutorials/file/dndfiles/#toc-selecting-files-dnd
             var file = event.target.files[0];
             var reader = new FileReader();
             reader.readAsDataURL(file);
@@ -112,29 +111,7 @@ $(function() {
 
         };
 
-        function loaded(event) {
-            var dataURL = event.target.result;
-            document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ dataURL +"')";
-
-            localStorageKanban.updateStorage("bgImgURL", dataURL);
-        }
     };
-
-    /*function handleEvent(event) {
-        var file = event.target.files[0];
-        var reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = loaded;
-    }*/
-
-    /*function loaded(event) {
-        var dataURL = event.target.result;
-        document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ dataURL +"')";
-
-        *//*localStorageKanban.updateStorage("bgImgURL", dataURL);
-         console.log(dataURL);
-         console.log(event.target);*//*
-    }*/
 
     function boardRender() {
         var boardName = newBoard.getBoardName();
@@ -355,10 +332,10 @@ $(function() {
         localStorageKanban.deleteStorageItem("Review");
         localStorageKanban.deleteStorageItem("Done");
 
-        dataReRender("To_Do", columnToDo);
-        dataReRender("In_Progress", columnInProgress);
-        dataReRender("Review", columnReview);
-        dataReRender( "Done", columnDone);
+        localDataUpdate("To_Do", columnToDo);
+        localDataUpdate("In_Progress", columnInProgress);
+        localDataUpdate("Review", columnReview);
+        localDataUpdate("Done", columnDone);
     });
 
     $("#dltBgImg").on("click", function() {
