@@ -65,10 +65,13 @@ $(function() {
 
         this.drop = function(event, moveTicketFunc, ticketRenderFunc) {
             event.preventDefault();
-            var $target = $(event.target);
-            var destinationColumnTitle = $target.siblings("header").find("span").text();
-            moveTicketFunc(draggedTicketTitle, destinationColumnTitle, ticketRenderFunc);
-            $("#errorMsg").text(errorMsg).fadeIn(200);
+            var file = event.dataTransfer.files[0];
+            if (!file) {
+                var $target = $(event.target);
+                var destinationColumnTitle = $target.siblings("header").find("span").text();
+                moveTicketFunc(draggedTicketTitle, destinationColumnTitle, ticketRenderFunc);
+                $("#errorMsg").text(errorMsg).fadeIn(200);
+            }
         };
 
         this.bin = function(event, deleteTicketFunc, ticketRenderFunc) {
@@ -90,16 +93,9 @@ $(function() {
             event.preventDefault(); // Cancel the default browser action.
             var file = event.dataTransfer.files[0];
             var reader = new FileReader();
-
             if (file) {
                 reader.readAsDataURL(file);
                 reader.onload = loaded;
-
-                //for video
-                /*reader.onload = function(event) {
-                     $("video").attr("src", "videos/"+file.name );
-                     console.log(event.target);
-                 }*/
             }
         };
 
@@ -108,7 +104,6 @@ $(function() {
             var reader = new FileReader();
             reader.readAsDataURL(file);
             reader.onload = loaded;
-
         };
 
     };
@@ -153,12 +148,6 @@ $(function() {
 
                 //localStorage
                 retrieveTicketsToDo = localStorageKanban.retrieveData("To_Do");
-                console.log(retrieveTicketsToDo);
-                /*if (retrieveTicketsToDo === null) {
-                    localStorageKanban.updateStorage("To_Do", destinationColumn.getAllSimpleTickets() );
-                    retrieveTicketsToDo = localStorageKanban.retrieveData("To_Do");
-                }*/
-                console.log(retrieveTicketsToDo);
                 localStorageKanban.addToArray(retrieveTicketsToDo, newSimpleTicket);
                 localStorageKanban.updateStorage("To_Do", retrieveTicketsToDo);
                 //localStorage
@@ -298,6 +287,7 @@ $(function() {
 
         if (title.length != 0 && description != 0) {
             createATicket(title, description, columnToDo, ticketRender);
+            $("input:text").val("");
         } else {
             errorMsg = "Please enter title and description.";
         }
