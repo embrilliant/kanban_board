@@ -12,14 +12,22 @@ $(function() {
 
     var columns = [columnToDo, columnInProgress, columnReview, columnDone];
 
+    var storageItemNames = ["To_Do", "In_Progress", "Review", "Done"];
+
+    var retrieveTicketsToDo = localStorageKanban.retrieveData(storageItemNames[0]);
+    var retrieveTicketsInProgress = localStorageKanban.retrieveData(storageItemNames[1]);
+    var retrieveTicketsReview = localStorageKanban.retrieveData(storageItemNames[2]);
+    var retrieveTicketsDone = localStorageKanban.retrieveData(storageItemNames[3]);
+
+    var retrievedDataArrays = [retrieveTicketsToDo, retrieveTicketsInProgress, retrieveTicketsReview, retrieveTicketsDone];
+
     for (var i = 0; i < columns.length; i++) {
         newBoard.addOneColumnsToBoard(columns[i]);
     }
 
-    var retrieveTicketsToDo = localStorageKanban.retrieveData("To_Do");
-    var retrieveTicketsInProgress = localStorageKanban.retrieveData("In_Progress");
-    var retrieveTicketsReview = localStorageKanban.retrieveData("Review");
-    var retrieveTicketsDone = localStorageKanban.retrieveData("Done");
+    function showErrorMsg() {
+        $("#errorMsg").text(errorMsg).fadeIn(200);
+    }
 
     function localDataUpdate(itemName, column) {
         localStorageKanban.updateStorage( itemName, column.showAllTicket() );
@@ -65,13 +73,13 @@ $(function() {
                 var $target = $(event.target);
                 var destinationColumnTitle = $target.siblings("header").find("span").text();
                 moveTicketFunc(draggedTicketTitle, destinationColumnTitle, ticketRenderFunc);
-                $("#errorMsg").text(errorMsg).fadeIn(200);
+                showErrorMsg();
             }
         };
 
         this.bin = function(event, deleteTicketFunc, ticketRenderFunc) {
             deleteTicketFunc(draggedTicketTitle, ticketRenderFunc);
-            $("#errorMsg").text(errorMsg).fadeIn(200);
+            showErrorMsg();
         };
     };
 
@@ -97,8 +105,10 @@ $(function() {
         this.imgSelectAndDisplay= function(event) { //inspiration ref: http://www.html5rocks.com/en/tutorials/file/dndfiles/#toc-selecting-files-dnd
             var file = event.target.files[0];
             var reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = loaded;
+            if (file) {
+                reader.readAsDataURL(file);
+                reader.onload = loaded;
+            }
         };
 
     };
@@ -131,8 +141,28 @@ $(function() {
         }
     }
 
-    function createATicket(ticketTitle, ticketDescription, destinationColumn, ticketRenderFunc) {
+    function ticketRender(column) {
+        var whichColumn = column.getTitle().replace(/ /g, '_');
+        var $board = $("#" + whichColumn);
+        $board.find("section").html("");
+        var arrayOfTickets = column.showAllTicket();
+        if ( arrayOfTickets.length > 0 ) {
+            for (var i = 0; i < column.getTicketCount(); i++) {
+                var ticketTitle = arrayOfTickets[i].getTitle();
+                var ticketDescription = arrayOfTickets[i].getDescription();
+                var cssClass = arrayOfTickets[i].constructor.name.toLowerCase();
+                var $newDiv = $('<div/>', {"class": cssClass,
+                    "draggable": "true"
+                });
+                $newDiv.html("Title: <span>"+ ticketTitle +"</span><br>Description: "+ ticketDescription);
+                $board.find("section").append($newDiv);
+                var newDiv = $newDiv.get(0);//
+                newDiv.addEventListener("dragstart", dAndD.drag, false);
+            }
+        }
+    }
 
+    function createATicket(ticketTitle, ticketDescription, destinationColumn, ticketRenderFunc) {
         var ticketExists = newBoard.checkIfATicketExistOnBoard(ticketTitle);
         var reachedWipOrNot = destinationColumn.reachedWipOrNot();
         if (!reachedWipOrNot) {
@@ -160,27 +190,6 @@ $(function() {
         //1. create a ticket with Title and Description
         //2. set a destination column and add it to the array in that column
         //3. render the column that has the ticket
-    }
-
-    function ticketRender(column) {
-        var whichColumn = column.getTitle().replace(/ /g, '_');
-        var $board = $("#" + whichColumn);
-        $board.find("section").html("");
-        var arrayOfTickets = column.showAllTicket();
-        if ( arrayOfTickets.length > 0 ) {
-            for (var i = 0; i < column.getTicketCount(); i++) {
-                var ticketTitle = arrayOfTickets[i].getTitle();
-                var ticketDescription = arrayOfTickets[i].getDescription();
-                var cssClass = arrayOfTickets[i].constructor.name.toLowerCase();
-                var $newDiv = $('<div/>', {"class": cssClass,
-                                            "draggable": "true"
-                                            });
-                $newDiv.html("Title: <span>"+ ticketTitle +"</span><br>Description: "+ ticketDescription);
-                $board.find("section").append($newDiv);
-                var newDiv = $newDiv.get(0);//
-                newDiv.addEventListener("dragstart", dAndD.drag, false);
-            }
-        }
     }
 
     function moveTicket(ticketTitle, columnTitle, ticketRenderFunc) {
@@ -266,61 +275,64 @@ $(function() {
         }
     }
 
+    var inputVal = function() {
+        var ticketTitle = $("input[name='ticket_title']").val();
+        var description = $("input[name='ticket_description']").val();
+        var columnTitle = $("input[name='column_title']").val();
+
+        return {
+                ticketTitle: ticketTitle,
+                description: description,
+                columnTitle: columnTitle
+                }
+    };
+
     boardRender();
     columnRender("Kanban");
 
-    initRetrievedDataRender(retrieveTicketsToDo, "To_Do", columnToDo);
-    initRetrievedDataRender(retrieveTicketsInProgress, "In_Progress", columnInProgress);
-    initRetrievedDataRender(retrieveTicketsReview, "Review", columnReview);
-    initRetrievedDataRender(retrieveTicketsDone, "Done", columnDone);
+    for (var s = 0; s < columns.length; s++) {
+        initRetrievedDataRender(retrievedDataArrays[s], storageItemNames[s], columns[s]);
+    }
 
+    //////buttons
     $("#create_a_ticket").on("click", function(event) {
         event.preventDefault();
-
-        var title = $("input[name='ticket_title']").val();
-        var description = $("input[name='ticket_description']").val();
-
-        if (title.length != 0 && description != 0) {
-            createATicket(title, description, columnToDo, ticketRender);
+        if ( inputVal().ticketTitle.length != 0 && inputVal().description != 0) {
+            createATicket( inputVal().ticketTitle, inputVal().description, columnToDo, ticketRender);
             $("input:text").val("");
         } else {
             errorMsg = "Please enter title and description.";
         }
-        $("#errorMsg").text(errorMsg).fadeIn(200);
+        showErrorMsg();
     });
 
     $("#move_ticket").on("click", function(event) {
         event.preventDefault();
-        var ticketTitle = $("input[name='ticket_title']").val();
-        var columnTitle = $("input[name='column_title']").val();
-        moveTicket(ticketTitle, columnTitle, ticketRender);
-        $("#errorMsg").text(errorMsg).fadeIn(200);
+        moveTicket( inputVal().ticketTitle, inputVal().columnTitle, ticketRender);
+        showErrorMsg();
     });
 
     $("#delete_ticket").on("click", function(event) {
         event.preventDefault();
-        var ticketTitle = $("input[name='ticket_title']").val();
-        deleteTicket(ticketTitle, ticketRender);
-        $("#errorMsg").text(errorMsg).fadeIn(200);
+        deleteTicket( inputVal().ticketTitle, ticketRender);
+        showErrorMsg();
     });
 
     $("#clear_ticket").on("click", function(event) {
         event.preventDefault();
 
-        for (var i = 0; i < columns.length; i++) {
-             columns[i].removeAllTickets();
-             ticketRender(columns[i]);
+        function storageItemClearAndUpdate(itemName, column) {
+            localStorageKanban.deleteStorageItem(itemName);
+            localDataUpdate(itemName, column);
         }
 
-        localStorageKanban.deleteStorageItem("To_Do");
-        localStorageKanban.deleteStorageItem("In_Progress");
-        localStorageKanban.deleteStorageItem("Review");
-        localStorageKanban.deleteStorageItem("Done");
+        for (var i = 0; i < columns.length; i++) {
+            columns[i].removeAllTickets();
+            ticketRender(columns[i]);
 
-        localDataUpdate("To_Do", columnToDo);
-        localDataUpdate("In_Progress", columnInProgress);
-        localDataUpdate("Review", columnReview);
-        localDataUpdate("Done", columnDone);
+            storageItemClearAndUpdate(storageItemNames[i], columns[i]);
+        }
+
     });
 
     $("#dltBgImg").on("click", function() {
@@ -330,7 +342,7 @@ $(function() {
 
     $("#selectFiles").on("change", bgImgAction.imgSelectAndDisplay);
 
-    //bin
+    ///////interactive bin
     document.getElementById("bin").addEventListener("dragover", dAndD.allowDrop, false);
     document.getElementById("bin").addEventListener("drop", function() {
         dAndD.bin(event, deleteTicket, ticketRender);
@@ -366,7 +378,7 @@ $(function() {
         }, 400);
     }
 
-    //// console logs
+    //////console logs
     console.log(retrieveTicketsToDo);
     console.log(retrieveTicketsInProgress);
     console.log(retrieveTicketsReview);
