@@ -47,11 +47,6 @@ $(function() {
         }
     }
 
-    console.log(retrieveTicketsToDo);
-    console.log(retrieveTicketsInProgress);
-    console.log(retrieveTicketsReview);
-    console.log(retrieveTicketsDone);
-
     var dAndD = new function() {
         var draggedTicketTitle;
 
@@ -279,8 +274,8 @@ $(function() {
     initRetrievedDataRender(retrieveTicketsReview, "Review", columnReview);
     initRetrievedDataRender(retrieveTicketsDone, "Done", columnDone);
 
-    $("#create_a_ticket").on("click", function(e) {
-        e.preventDefault();
+    $("#create_a_ticket").on("click", function(event) {
+        event.preventDefault();
 
         var title = $("input[name='ticket_title']").val();
         var description = $("input[name='ticket_description']").val();
@@ -370,5 +365,11 @@ $(function() {
             });
         }, 400);
     }
+
+    //// console logs
+    console.log(retrieveTicketsToDo);
+    console.log(retrieveTicketsInProgress);
+    console.log(retrieveTicketsReview);
+    console.log(retrieveTicketsDone);
 
 });
