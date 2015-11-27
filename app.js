@@ -281,9 +281,9 @@ $(function() {
         var columnTitle = $("input[name='column_title']").val();
 
         return {
-                ticketTitle: ticketTitle,
-                description: description,
-                columnTitle: columnTitle
+                    ticketTitle: ticketTitle,
+                    description: description,
+                    columnTitle: columnTitle
                 }
     };
 
