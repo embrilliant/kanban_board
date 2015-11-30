@@ -15,11 +15,6 @@ $(function() {
 
     var storageItemNames = ["To_Do", "In_Progress", "Review", "Done"];
 
-    //var retrieveTicketsToDo = localStorageKanban.retrieveData(storageItemNames[0]);
-    //var retrieveTicketsInProgress = localStorageKanban.retrieveData(storageItemNames[1]);
-    //var retrieveTicketsReview = localStorageKanban.retrieveData(storageItemNames[2]);
-    //var retrieveTicketsDone = localStorageKanban.retrieveData(storageItemNames[3]);
-
     var retrievedDataArrays = [localStorageKanban.retrieveData(storageItemNames[0]), localStorageKanban.retrieveData(storageItemNames[1]), localStorageKanban.retrieveData(storageItemNames[2]), localStorageKanban.retrieveData(storageItemNames[3])];
 
     for (var i = 0; i < columns.length; i++) {
@@ -29,10 +24,6 @@ $(function() {
     function showErrorMsg() {
         $("#errorMsg").text(errorMsg).fadeIn(200);
     }
-
-    /*function localDataUpdate(itemName, column) {
-        localStorageKanban.updateStorage( itemName, column.showAllTicket() );
-    }*/
 
     function initRetrievedDataRender(retrievedData, itemName, column) {
 
