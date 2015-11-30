@@ -9,17 +9,18 @@ $(function() {
     var columnDone = new Column("Done", 5);
 
     var localStorageKanban = new LocalStore();
+    var storageHandle = new LocalStorageHandle(localStorageKanban);
 
     var columns = [columnToDo, columnInProgress, columnReview, columnDone];
 
     var storageItemNames = ["To_Do", "In_Progress", "Review", "Done"];
 
-    var retrieveTicketsToDo = localStorageKanban.retrieveData(storageItemNames[0]);
-    var retrieveTicketsInProgress = localStorageKanban.retrieveData(storageItemNames[1]);
-    var retrieveTicketsReview = localStorageKanban.retrieveData(storageItemNames[2]);
-    var retrieveTicketsDone = localStorageKanban.retrieveData(storageItemNames[3]);
+    //var retrieveTicketsToDo = localStorageKanban.retrieveData(storageItemNames[0]);
+    //var retrieveTicketsInProgress = localStorageKanban.retrieveData(storageItemNames[1]);
+    //var retrieveTicketsReview = localStorageKanban.retrieveData(storageItemNames[2]);
+    //var retrieveTicketsDone = localStorageKanban.retrieveData(storageItemNames[3]);
 
-    var retrievedDataArrays = [retrieveTicketsToDo, retrieveTicketsInProgress, retrieveTicketsReview, retrieveTicketsDone];
+    var retrievedDataArrays = [localStorageKanban.retrieveData(storageItemNames[0]), localStorageKanban.retrieveData(storageItemNames[1]), localStorageKanban.retrieveData(storageItemNames[2]), localStorageKanban.retrieveData(storageItemNames[3])];
 
     for (var i = 0; i < columns.length; i++) {
         newBoard.addOneColumnsToBoard(columns[i]);
@@ -29,9 +30,9 @@ $(function() {
         $("#errorMsg").text(errorMsg).fadeIn(200);
     }
 
-    function localDataUpdate(itemName, column) {
+    /*function localDataUpdate(itemName, column) {
         localStorageKanban.updateStorage( itemName, column.showAllTicket() );
-    }
+    }*/
 
     function initRetrievedDataRender(retrievedData, itemName, column) {
 
@@ -100,6 +101,7 @@ $(function() {
                 reader.readAsDataURL(file);
                 reader.onload = loaded;
             }
+            console.log(event.dataTransfer.files);
         };
 
         this.imgSelectAndDisplay= function(event) { //inspiration ref: http://www.html5rocks.com/en/tutorials/file/dndfiles/#toc-selecting-files-dnd
@@ -109,6 +111,7 @@ $(function() {
                 reader.readAsDataURL(file);
                 reader.onload = loaded;
             }
+            console.log(event.target.files);
         };
 
     };
@@ -172,10 +175,9 @@ $(function() {
                 var newSimpleTicket = newTicket.toSimpleTicket();
 
                 //localStorage
-                retrieveTicketsToDo = localStorageKanban.retrieveData("To_Do");
-                localStorageKanban.addToArray(retrieveTicketsToDo, newSimpleTicket);
-                localStorageKanban.updateStorage("To_Do", retrieveTicketsToDo);
-                //localStorage
+                var retrieveTicketsToDo = localStorageKanban.retrieveData("To_Do");
+
+                storageHandle.addDataAndUpdate(retrieveTicketsToDo, newSimpleTicket, "To_Do");
 
                 ticketRenderFunc(destinationColumn);
                 errorMsg = "";
@@ -215,20 +217,15 @@ $(function() {
                     var columnNameForLocalStorageOrigin = columnOrigin.getTitle().replace(/ /g, '_');
                     ////retrieve
                     var retrieveDataO = localStorageKanban.retrieveData(columnNameForLocalStorageOrigin);
-                    ////remove
-                    localStorageKanban.removeDataInArray(retrieveDataO, ticketTitle);
-                    ////update
-                    localStorageKanban.updateStorage(columnNameForLocalStorageOrigin, retrieveDataO);
+
+                    storageHandle.removeDataAndUpdate(retrieveDataO, ticketTitle, columnNameForLocalStorageOrigin);
 
                     ///Found
                     var columnNameForLocalStorageFound = columnFound.getTitle().replace(/ /g, '_');
                     ////retrieve
                     var retrieveDataF = localStorageKanban.retrieveData(columnNameForLocalStorageFound);
-                    ////add
-                    localStorageKanban.addToArray(retrieveDataF, newSimpleTicket);
-                    ////update
-                    localStorageKanban.updateStorage(columnNameForLocalStorageFound, retrieveDataF);
-                    //localStorage
+
+                    storageHandle.addDataAndUpdate(retrieveDataF, newSimpleTicket, columnNameForLocalStorageFound);
 
                     errorMsg = "";
                 } else {
@@ -258,11 +255,8 @@ $(function() {
                 var columnNameForLocalStorageOrigin = columnOrigin.getTitle().replace(/ /g, '_'); //"Done"
                 ///retrieve
                 var retrieveDataO = localStorageKanban.retrieveData(columnNameForLocalStorageOrigin);
-                ///remove
-                localStorageKanban.removeDataInArray(retrieveDataO, ticketTitle);
-                ////update
-                localStorageKanban.updateStorage(columnNameForLocalStorageOrigin, retrieveDataO);
-                //localStorage
+
+                storageHandle.removeDataAndUpdate(retrieveDataO, ticketTitle, columnNameForLocalStorageOrigin);
 
                 animatedBin();
             } else {
@@ -321,16 +315,11 @@ $(function() {
     $("#clear_ticket").on("click", function(event) {
         event.preventDefault();
 
-        function storageItemClearAndUpdate(itemName, column) {
-            localStorageKanban.deleteStorageItem(itemName);
-            localDataUpdate(itemName, column);
-        }
-
         for (var i = 0; i < columns.length; i++) {
             columns[i].removeAllTickets();
             ticketRender(columns[i]);
 
-            storageItemClearAndUpdate(storageItemNames[i], columns[i]);
+            localStorageKanban.storageItemClearAndUpdate(storageItemNames[i], columns[i].showAllTicket() );
         }
 
     });
@@ -379,9 +368,9 @@ $(function() {
     }
 
     //////console logs
-    console.log(retrieveTicketsToDo);
-    console.log(retrieveTicketsInProgress);
-    console.log(retrieveTicketsReview);
-    console.log(retrieveTicketsDone);
+    console.log(localStorageKanban.retrieveData(storageItemNames[0]));
+    console.log(localStorageKanban.retrieveData(storageItemNames[1]));
+    console.log(localStorageKanban.retrieveData(storageItemNames[2]));
+    console.log(localStorageKanban.retrieveData(storageItemNames[3]));
 
 });
