@@ -11,6 +11,8 @@ $(function() {
     var localStorageKanban = new LocalStore();
     var storageHandle = new LocalStorageHandle(localStorageKanban);
 
+    var bgImgAction = new BgImgAction( localStorageKanban );
+
     var columns = [columnToDo, columnInProgress, columnReview, columnDone];
 
     var storageItemNames = ["To_Do", "In_Progress", "Review", "Done"];
@@ -42,36 +44,6 @@ $(function() {
             document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ bgImgURL +"')";
         }
     }
-
-    var bgImgAction = new function() {
-
-        function loaded(event) {
-            var dataURL = event.target.result;
-            document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ dataURL +"')";
-
-            localStorageKanban.updateStorage("bgImgURL", dataURL);
-        }
-
-        this.imgDropAndDisplay = function(event) {
-            event.preventDefault(); // Cancel the default browser action.
-            var file = event.dataTransfer.files[0];
-            var reader = new FileReader();
-            if (file) {
-                reader.readAsDataURL(file);
-                reader.onload = loaded;
-            }
-        };
-
-        this.imgSelectAndDisplay= function(event) { //inspiration ref: http://www.html5rocks.com/en/tutorials/file/dndfiles/#toc-selecting-files-dnd
-            var file = event.target.files[0];
-            var reader = new FileReader();
-            if (file) {
-                reader.readAsDataURL(file);
-                reader.onload = loaded;
-            }
-        };
-
-    };
 
     function boardRender() {
         var boardName = newBoard.getBoardName();
