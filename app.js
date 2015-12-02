@@ -11,6 +11,7 @@ $(function() {
     var localStorageKanban = new LocalStore();
     var storageHandle = new LocalStorageHandle(localStorageKanban);
 
+    var dAndD = new DAndD();
     var bgImgAction = new BgImgAction( localStorageKanban );
 
     var columns = [columnToDo, columnInProgress, columnReview, columnDone];
@@ -69,6 +70,7 @@ $(function() {
             theColumn.getElementsByTagName("section")[0].addEventListener("dragover", dAndD.allowDrop, false);
             theColumn.getElementsByTagName("section")[0].addEventListener("drop", function() {
                 dAndD.drop(event, moveTicket, ticketRender);
+                showErrorMsg();
             }, false);
         }
     }
@@ -243,17 +245,19 @@ $(function() {
 
     });
 
-    $("#dltBgImg").on("click", function() {
-        localStorageKanban.deleteStorageItem("bgImgURL");
-        document.getElementsByClassName("board")[0].style.backgroundImage = "none";
-    });
-
     $("#selectFiles").on("change", bgImgAction.imgSelectAndDisplay);
+
+    $("#dltBgImg").on("click", function() {
+        document.getElementsByClassName("board")[0].style.backgroundImage = "none";
+        $("#selectFiles").val("");
+        localStorageKanban.deleteStorageItem("bgImgURL");
+    });
 
     ///////interactive bin
     document.getElementById("bin").addEventListener("dragover", dAndD.allowDrop, false);
     document.getElementById("bin").addEventListener("drop", function() {
         dAndD.bin(event, deleteTicket, ticketRender);
+        showErrorMsg();
     }, false);
 
     function animatedBin() {
