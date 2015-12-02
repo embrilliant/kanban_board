@@ -1,7 +1,7 @@
 $(function() {
 
     var newBoard = new Board("Kanban", 4);
-    var errorMsg;
+    //var errorMsg;
 
     var columnToDo = new Column("To Do", 5);
     var columnInProgress = new Column("In Progress", 5);
@@ -19,10 +19,6 @@ $(function() {
 
     for (var i = 0; i < columns.length; i++) {
         newBoard.addOneColumnsToBoard(columns[i]);
-    }
-
-    function showErrorMsg() {
-        $("#errorMsg").text(errorMsg).fadeIn(200);
     }
 
     function initRetrievedDataRender(retrievedData, itemName, column) {
@@ -46,34 +42,6 @@ $(function() {
             document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ bgImgURL +"')";
         }
     }
-
-    var dAndD = new function() {
-        var draggedTicketTitle;
-
-        this.allowDrop = function(event) {
-            event.preventDefault();
-        };
-
-        this.drag = function(event) {
-            draggedTicketTitle = $(event.target).find("span").text();
-        };
-
-        this.drop = function(event, moveTicketFunc, ticketRenderFunc) {
-            event.preventDefault();
-            var file = event.dataTransfer.files[0];
-            if (!file) {
-                var $target = $(event.target);
-                var destinationColumnTitle = $target.siblings("header").find("span").text();
-                moveTicketFunc(draggedTicketTitle, destinationColumnTitle, ticketRenderFunc);
-                showErrorMsg();
-            }
-        };
-
-        this.bin = function(event, deleteTicketFunc, ticketRenderFunc) {
-            deleteTicketFunc(draggedTicketTitle, ticketRenderFunc);
-            showErrorMsg();
-        };
-    };
 
     var bgImgAction = new function() {
 

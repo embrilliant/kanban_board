@@ -209,6 +209,7 @@ button, input {
 }
 
 input[type="file"] {
+    width: 100%;
     background-color: transparent;
 }
 
