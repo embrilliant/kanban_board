@@ -92,7 +92,6 @@ $(function() {
                 reader.readAsDataURL(file);
                 reader.onload = loaded;
             }
-            console.log(event.dataTransfer.files);
         };
 
         this.imgSelectAndDisplay= function(event) { //inspiration ref: http://www.html5rocks.com/en/tutorials/file/dndfiles/#toc-selecting-files-dnd
@@ -102,7 +101,6 @@ $(function() {
                 reader.readAsDataURL(file);
                 reader.onload = loaded;
             }
-            console.log(event.target.files);
         };
 
     };
@@ -166,9 +164,7 @@ $(function() {
                 var newSimpleTicket = newTicket.toSimpleTicket();
 
                 //localStorage
-                var retrieveTicketsToDo = localStorageKanban.retrieveData("To_Do");
-
-                storageHandle.addDataAndUpdate(retrieveTicketsToDo, newSimpleTicket, "To_Do");
+                storageHandle.addDataAndUpdate(newSimpleTicket, columns[0]);
 
                 ticketRenderFunc(destinationColumn);
                 errorMsg = "";
@@ -205,18 +201,10 @@ $(function() {
 
                     //localStorage
                     ///Origin
-                    var columnNameForLocalStorageOrigin = columnOrigin.getTitle().replace(/ /g, '_');
-                    ////retrieve
-                    var retrieveDataO = localStorageKanban.retrieveData(columnNameForLocalStorageOrigin);
-
-                    storageHandle.removeDataAndUpdate(retrieveDataO, ticketTitle, columnNameForLocalStorageOrigin);
+                    storageHandle.removeDataAndUpdate(ticketTitle, columnOrigin);
 
                     ///Found
-                    var columnNameForLocalStorageFound = columnFound.getTitle().replace(/ /g, '_');
-                    ////retrieve
-                    var retrieveDataF = localStorageKanban.retrieveData(columnNameForLocalStorageFound);
-
-                    storageHandle.addDataAndUpdate(retrieveDataF, newSimpleTicket, columnNameForLocalStorageFound);
+                    storageHandle.addDataAndUpdate(newSimpleTicket, columnFound);
 
                     errorMsg = "";
                 } else {
@@ -242,12 +230,7 @@ $(function() {
                 ticketRenderFunc(columnDone);
                 errorMsg = "";
 
-                //localStorage
-                var columnNameForLocalStorageOrigin = columnOrigin.getTitle().replace(/ /g, '_'); //"Done"
-                ///retrieve
-                var retrieveDataO = localStorageKanban.retrieveData(columnNameForLocalStorageOrigin);
-
-                storageHandle.removeDataAndUpdate(retrieveDataO, ticketTitle, columnNameForLocalStorageOrigin);
+                storageHandle.removeDataAndUpdate(ticketTitle, columnOrigin);
 
                 animatedBin();
             } else {
@@ -260,17 +243,22 @@ $(function() {
         }
     }
 
-    var inputVal = function() {
-        var ticketTitle = $("input[name='ticket_title']").val();
-        var description = $("input[name='ticket_description']").val();
-        var columnTitle = $("input[name='column_title']").val();
+    function userTicket() {
+        var ticket = new Ticket();
 
-        return {
-                    ticketTitle: ticketTitle,
-                    description: description,
-                    columnTitle: columnTitle
-                }
-    };
+        ticket.setTitle( $("input[name='ticket_title']").val() );
+        ticket.setDescription( $("input[name='ticket_description']").val() );
+
+        return ticket;
+    }
+
+    function userColumn() {
+        var column = new Column();
+
+        column.setTitle( $("input[name='column_title']").val() );
+
+        return column;
+    }
 
     boardRender();
     columnRender("Kanban");
@@ -282,8 +270,8 @@ $(function() {
     //////buttons
     $("#create_a_ticket").on("click", function(event) {
         event.preventDefault();
-        if ( inputVal().ticketTitle.length != 0 && inputVal().description != 0) {
-            createATicket( inputVal().ticketTitle, inputVal().description, columnToDo, ticketRender);
+        if ( userTicket().getTitle().length != 0 && userTicket().getDescription().length != 0) {
+            createATicket( userTicket().getTitle(), userTicket().getDescription(), columnToDo, ticketRender);
             $("input:text").val("");
         } else {
             errorMsg = "Please enter title and description.";
@@ -293,13 +281,13 @@ $(function() {
 
     $("#move_ticket").on("click", function(event) {
         event.preventDefault();
-        moveTicket( inputVal().ticketTitle, inputVal().columnTitle, ticketRender);
+        moveTicket( userTicket().getTitle(), userColumn().getTitle(), ticketRender);
         showErrorMsg();
     });
 
     $("#delete_ticket").on("click", function(event) {
         event.preventDefault();
-        deleteTicket( inputVal().ticketTitle, ticketRender);
+        deleteTicket( userTicket().getTitle(), ticketRender);
         showErrorMsg();
     });
 
@@ -310,7 +298,7 @@ $(function() {
             columns[i].removeAllTickets();
             ticketRender(columns[i]);
 
-            localStorageKanban.storageItemClearAndUpdate(storageItemNames[i], columns[i].showAllTicket() );
+            storageHandle.storageItemClearAndUpdate(storageItemNames[i], columns[i] );
         }
 
     });
