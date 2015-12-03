@@ -1,7 +1,6 @@
 $(function() {
 
     var newBoard = new Board("Kanban", 4);
-    //var errorMsg;
 
     var columnToDo = new Column("To Do", 5);
     var columnInProgress = new Column("In Progress", 5);
@@ -14,7 +13,9 @@ $(function() {
     var dAndD = new DAndD();
     var bgImgAction = new BgImgAction( localStorageKanban );
 
-    var ticketHandler = new TicketHandler(newBoard, ticketRender, storageHandle);
+    var errorMsg = new ErrorMsg();
+
+    var ticketHandler = new TicketHandler(newBoard, ticketRender, storageHandle, errorMsg);
 
     var animatedBin = new Anime( $( document.getElementById("icon_bin") ) );
 
@@ -74,7 +75,7 @@ $(function() {
             theColumn.getElementsByTagName("section")[0].addEventListener("dragover", dAndD.allowDrop, false);
             theColumn.getElementsByTagName("section")[0].addEventListener("drop", function() {
                 dAndD.drop(event, ticketHandler.moveTicket);
-                showErrorMsg();
+                errorMsg.showErrorMsg();
             }, false);
         }
     }
@@ -94,7 +95,7 @@ $(function() {
                 });
                 $newDiv.html("Title: <span>"+ ticketTitle +"</span><br>Description: "+ ticketDescription);
                 $board.find("section").append($newDiv);
-                var newDiv = $newDiv.get(0);//
+                var newDiv = $newDiv.get(0);
                 newDiv.addEventListener("dragstart", dAndD.drag, false);
             }
         }
@@ -132,23 +133,23 @@ $(function() {
             ticketHandler.createATicket( userTicket(), columnToDo );
             $("input:text").val("");
         } else {
-            errorMsg = "Please enter title and description.";
+            errorMsg.setMsg("Please enter title and description.");
         }
-        showErrorMsg();
+        errorMsg.showErrorMsg();
     });
 
     $("#move_ticket").on("click", function(event) {
         event.preventDefault();
 
         ticketHandler.moveTicket( userTicket(), userColumn() );
-        showErrorMsg();
+        errorMsg.showErrorMsg();
     });
 
     $("#delete_ticket").on("click", function(event) {
         event.preventDefault();
 
         ticketHandler.deleteTicket( userTicket(), columnDone, animatedBin );
-        showErrorMsg();
+        errorMsg.showErrorMsg();
     });
 
     $("#clear_ticket").on("click", function(event) {
@@ -175,7 +176,7 @@ $(function() {
     document.getElementById("bin").addEventListener("dragover", dAndD.allowDrop, false);
     document.getElementById("bin").addEventListener("drop", function() {
         dAndD.bin(event, columnDone, ticketHandler.deleteTicket, animatedBin);
-        showErrorMsg();
+        errorMsg.showErrorMsg();
     }, false);
 
     //////console logs
