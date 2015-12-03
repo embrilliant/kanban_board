@@ -14,6 +14,8 @@ $(function() {
     var dAndD = new DAndD();
     var bgImgAction = new BgImgAction( localStorageKanban );
 
+    var ticketHandler = new TicketHandler(newBoard, ticketRender, storageHandle);
+
     var columns = [columnToDo, columnInProgress, columnReview, columnDone];
 
     var storageItemNames = ["To_Do", "In_Progress", "Review", "Done"];
@@ -69,7 +71,7 @@ $(function() {
             var theColumn = $newDiv.get(0);
             theColumn.getElementsByTagName("section")[0].addEventListener("dragover", dAndD.allowDrop, false);
             theColumn.getElementsByTagName("section")[0].addEventListener("drop", function() {
-                dAndD.drop(event, moveTicket, ticketRender);
+                dAndD.drop(event, ticketHandler.moveTicket);
                 showErrorMsg();
             }, false);
         }
@@ -95,96 +97,7 @@ $(function() {
             }
         }
     }
-
-    function createATicket(ticketTitle, ticketDescription, destinationColumn, ticketRenderFunc) {
-        var ticketExists = newBoard.checkIfATicketExistOnBoard(ticketTitle);
-        var reachedWipOrNot = destinationColumn.reachedWipOrNot();
-        if (!reachedWipOrNot) {
-            if (!ticketExists) {
-                var newTicket = new Ticket(ticketTitle, ticketDescription);
-                destinationColumn.addOneTicket(newTicket);
-                var newSimpleTicket = newTicket.toSimpleTicket();
-
-                //localStorage
-                storageHandle.addDataAndUpdate(newSimpleTicket, columns[0]);
-
-                ticketRenderFunc(destinationColumn);
-                errorMsg = "";
-            } else {
-                errorMsg = "Ticket already exists.";
-                console.log("Ticket already exists.");
-            }
-        } else {
-            errorMsg = "destination column reached WIP.";
-            console.log("reached WIP.");
-        }
-        //1. create a ticket with Title and Description
-        //2. set a destination column and add it to the array in that column
-        //3. render the column that has the ticket
-    }
-
-    function moveTicket(ticketTitle, columnTitle, ticketRenderFunc) {
-        //1. check if ticket exists.
-        var ticketExists = newBoard.checkIfATicketExistOnBoard(ticketTitle); // need ticketTitle
-        if (ticketExists) {
-            //2. find the column
-            var columnOrigin = newBoard.findColumnByTicketTitle(ticketTitle);
-            var ticketFound = columnOrigin.findTicketByTitle(ticketTitle);
-            var columnFound = newBoard.findColumnByTitle(columnTitle); // need columnTitle
-            var newSimpleTicket = ticketFound.toSimpleTicket();
-            if (columnFound) {
-                //check if reached Wip or not
-                if ( !columnFound.reachedWipOrNot() ) {
-                    //3. move the ticketFound to the columnFound
-                    columnFound.addOneTicket(ticketFound);
-                    columnOrigin.removeTicketByTitle(ticketTitle);
-                    ticketRenderFunc(columnOrigin);
-                    ticketRenderFunc(columnFound);
-
-                    //localStorage
-                    ///Origin
-                    storageHandle.removeDataAndUpdate(ticketTitle, columnOrigin);
-
-                    ///Found
-                    storageHandle.addDataAndUpdate(newSimpleTicket, columnFound);
-
-                    errorMsg = "";
-                } else {
-                    errorMsg = "destination column reached WIP.";
-                    console.log("reached WIP.");
-                }
-            } else {
-                errorMsg = "Cannot find such column.";
-                console.log("Cannot find such column.");
-            }
-        } else {
-            errorMsg = "Ticket not found.";
-            console.log("Ticket not found.");
-        }
-    }
-
-    function deleteTicket(ticketTitle, ticketRenderFunc) {
-        var ticketExists = newBoard.checkIfATicketExistOnBoard(ticketTitle);
-        if (ticketExists) {
-            var columnOrigin = newBoard.findColumnByTicketTitle(ticketTitle);
-            if (columnOrigin.getTitle() === columnDone.getTitle()) {
-                columnDone.removeTicketByTitle(ticketTitle);
-                ticketRenderFunc(columnDone);
-                errorMsg = "";
-
-                storageHandle.removeDataAndUpdate(ticketTitle, columnOrigin);
-
-                animatedBin();
-            } else {
-                errorMsg = "Ticket can only be deleted from Done.";
-                console.log("Ticket can only be deleted from Done.");
-            }
-        } else {
-            errorMsg = "Ticket not found.";
-            console.log("Ticket not found.");
-        }
-    }
-
+    
     function userTicket() {
         var ticket = new Ticket();
 
@@ -213,7 +126,9 @@ $(function() {
     $("#create_a_ticket").on("click", function(event) {
         event.preventDefault();
         if ( userTicket().getTitle().length != 0 && userTicket().getDescription().length != 0) {
-            createATicket( userTicket().getTitle(), userTicket().getDescription(), columnToDo, ticketRender);
+
+            ticketHandler.createATicket( userTicket(), columnToDo );
+            //createATicket( userTicket().getTitle(), userTicket().getDescription(), columnToDo, ticketRender);
             $("input:text").val("");
         } else {
             errorMsg = "Please enter title and description.";
@@ -223,13 +138,17 @@ $(function() {
 
     $("#move_ticket").on("click", function(event) {
         event.preventDefault();
-        moveTicket( userTicket().getTitle(), userColumn().getTitle(), ticketRender);
+
+        ticketHandler.moveTicket( userTicket(), userColumn() );
+        //moveTicket( userTicket().getTitle(), userColumn().getTitle(), ticketRender);
         showErrorMsg();
     });
 
     $("#delete_ticket").on("click", function(event) {
         event.preventDefault();
-        deleteTicket( userTicket().getTitle(), ticketRender);
+
+        ticketHandler.deleteTicket( userTicket(), columnDone );
+        //deleteTicket( userTicket().getTitle(), ticketRender);
         showErrorMsg();
     });
 
@@ -256,7 +175,7 @@ $(function() {
     ///////interactive bin
     document.getElementById("bin").addEventListener("dragover", dAndD.allowDrop, false);
     document.getElementById("bin").addEventListener("drop", function() {
-        dAndD.bin(event, deleteTicket, ticketRender);
+        dAndD.bin(event, columnDone, ticketHandler.deleteTicket);
         showErrorMsg();
     }, false);
 
