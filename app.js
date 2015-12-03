@@ -31,28 +31,6 @@ $(function() {
         newBoard.addOneColumnsToBoard(columns[i]);
     }
 
-    function initRetrievedDataRender(retrievedData, itemName, column) {
-
-        if (retrievedData === null) {
-            localStorageKanban.updateStorage( itemName, column.showAllTicket() );
-            retrievedData = localStorageKanban.retrieveData(itemName);
-        }
-
-        for (var i = 0; i < retrievedData.length; i++ ) {
-            var title = retrievedData[i].title;
-            var description = retrievedData[i].description;
-            var newTicket = new Ticket(title, description);
-            column.addOneTicket(newTicket);
-        }
-
-        render.ticket(column);
-
-        var bgImgURL = localStorageKanban.retrieveData("bgImgURL");
-        if (bgImgURL) {
-            document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ bgImgURL +"')";
-        }
-    }
-
     function userTicket() {
         var ticket = new Ticket();
 
@@ -74,7 +52,8 @@ $(function() {
     render.column(newBoard,ticketHandler, errorMsg);
 
     for (var s = 0; s < columns.length; s++) {
-        initRetrievedDataRender(retrievedDataArrays[s], storageItemNames[s], columns[s]);
+        render.initialRetrievedData( retrievedDataArrays[s], storageItemNames[s], columns[s], localStorageKanban );
+        //initRetrievedDataRender(retrievedDataArrays[s], storageItemNames[s], columns[s]);
     }
 
     //////buttons
