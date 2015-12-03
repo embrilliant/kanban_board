@@ -15,7 +15,9 @@ $(function() {
 
     var errorMsg = new ErrorMsg();
 
-    var ticketHandler = new TicketHandler(newBoard, ticketRender, storageHandle, errorMsg);
+    var render = new Render( dAndD );
+
+    var ticketHandler = new TicketHandler(newBoard, render, storageHandle, errorMsg);
 
     var animatedBin = new Anime( $( document.getElementById("icon_bin") ) );
 
@@ -43,61 +45,11 @@ $(function() {
             column.addOneTicket(newTicket);
         }
 
-        ticketRender(column);
+        render.ticket(column);
 
         var bgImgURL = localStorageKanban.retrieveData("bgImgURL");
         if (bgImgURL) {
             document.getElementsByClassName("board")[0].style.backgroundImage = "url('"+ bgImgURL +"')";
-        }
-    }
-
-    function boardRender() {
-        var boardName = newBoard.getBoardName();
-        var cssClass = newBoard.constructor.name.toLowerCase();
-        var $newDiv = $('<div/>',{ id: boardName, "class": cssClass});
-        $("#board_container").append($newDiv);
-        var theBoard = $newDiv.get(0);
-        theBoard.addEventListener("drop", bgImgAction.imgDropAndDisplay, false);
-        theBoard.addEventListener("dragover", dAndD.allowDrop);
-    }
-
-    function columnRender(boardName) {
-        var arrayOfColumns = newBoard.getAllColumns();
-        for (var i = 0; i < newBoard.getColumnCount(); i++) {
-            var columnTitle = arrayOfColumns[i].getTitle();
-            var divId = columnTitle.replace(/ /g,'_');
-            var cssClass = arrayOfColumns[i].constructor.name.toLowerCase();
-            var $newDiv = $('<div/>',{ id: divId, "class": cssClass});
-            $newDiv.append("<header><span>"+ columnTitle +"</span> ("+ arrayOfColumns[i].getWipNumber() +") </header><section></section>");
-            $("#"+boardName).append($newDiv);
-            //find child element javascript
-            var theColumn = $newDiv.get(0);
-            theColumn.getElementsByTagName("section")[0].addEventListener("dragover", dAndD.allowDrop, false);
-            theColumn.getElementsByTagName("section")[0].addEventListener("drop", function() {
-                dAndD.drop(event, ticketHandler.moveTicket);
-                errorMsg.showErrorMsg();
-            }, false);
-        }
-    }
-
-    function ticketRender(column) {
-        var whichColumn = column.getTitle().replace(/ /g, '_');
-        var $board = $("#" + whichColumn);
-        $board.find("section").html("");
-        var arrayOfTickets = column.showAllTicket();
-        if ( arrayOfTickets.length > 0 ) {
-            for (var i = 0; i < column.getTicketCount(); i++) {
-                var ticketTitle = arrayOfTickets[i].getTitle();
-                var ticketDescription = arrayOfTickets[i].getDescription();
-                var cssClass = arrayOfTickets[i].constructor.name.toLowerCase();
-                var $newDiv = $('<div/>', {"class": cssClass,
-                    "draggable": "true"
-                });
-                $newDiv.html("Title: <span>"+ ticketTitle +"</span><br>Description: "+ ticketDescription);
-                $board.find("section").append($newDiv);
-                var newDiv = $newDiv.get(0);
-                newDiv.addEventListener("dragstart", dAndD.drag, false);
-            }
         }
     }
 
@@ -118,8 +70,8 @@ $(function() {
         return column;
     }
 
-    boardRender();
-    columnRender("Kanban");
+    render.board(newBoard, bgImgAction);
+    render.column(newBoard,ticketHandler, errorMsg);
 
     for (var s = 0; s < columns.length; s++) {
         initRetrievedDataRender(retrievedDataArrays[s], storageItemNames[s], columns[s]);
@@ -157,7 +109,7 @@ $(function() {
 
         for (var i = 0; i < columns.length; i++) {
             columns[i].removeAllTickets();
-            ticketRender(columns[i]);
+            render.ticket(columns[i]);
 
             storageHandle.storageItemClearAndUpdate(storageItemNames[i], columns[i] );
         }
