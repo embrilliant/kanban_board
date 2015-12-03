@@ -16,6 +16,8 @@ $(function() {
 
     var ticketHandler = new TicketHandler(newBoard, ticketRender, storageHandle);
 
+    var animatedBin = new Anime( $( document.getElementById("icon_bin") ) );
+
     var columns = [columnToDo, columnInProgress, columnReview, columnDone];
 
     var storageItemNames = ["To_Do", "In_Progress", "Review", "Done"];
@@ -97,7 +99,7 @@ $(function() {
             }
         }
     }
-    
+
     function userTicket() {
         var ticket = new Ticket();
 
@@ -128,7 +130,6 @@ $(function() {
         if ( userTicket().getTitle().length != 0 && userTicket().getDescription().length != 0) {
 
             ticketHandler.createATicket( userTicket(), columnToDo );
-            //createATicket( userTicket().getTitle(), userTicket().getDescription(), columnToDo, ticketRender);
             $("input:text").val("");
         } else {
             errorMsg = "Please enter title and description.";
@@ -140,15 +141,13 @@ $(function() {
         event.preventDefault();
 
         ticketHandler.moveTicket( userTicket(), userColumn() );
-        //moveTicket( userTicket().getTitle(), userColumn().getTitle(), ticketRender);
         showErrorMsg();
     });
 
     $("#delete_ticket").on("click", function(event) {
         event.preventDefault();
 
-        ticketHandler.deleteTicket( userTicket(), columnDone );
-        //deleteTicket( userTicket().getTitle(), ticketRender);
+        ticketHandler.deleteTicket( userTicket(), columnDone, animatedBin );
         showErrorMsg();
     });
 
@@ -175,39 +174,9 @@ $(function() {
     ///////interactive bin
     document.getElementById("bin").addEventListener("dragover", dAndD.allowDrop, false);
     document.getElementById("bin").addEventListener("drop", function() {
-        dAndD.bin(event, columnDone, ticketHandler.deleteTicket);
+        dAndD.bin(event, columnDone, ticketHandler.deleteTicket, animatedBin);
         showErrorMsg();
     }, false);
-
-    function animatedBin() {
-        var $bin = $( document.getElementById("icon_bin") );
-
-        setTimeout(function(){
-            $bin.css({
-                "transform": "rotate(-30deg)"
-            });
-        }, 0);
-        setTimeout(function(){
-            $bin.css({
-                "transform": "rotate(20deg)"
-            });
-        }, 100);
-        setTimeout(function(){
-            $bin.css({
-                "transform": "rotate(-20deg)"
-            });
-        }, 200);
-        setTimeout(function(){
-            $bin.css({
-                "transform": "rotate(20deg)"
-            });
-        }, 300);
-        setTimeout(function(){
-            $bin.css({
-                "transform": "none"
-            });
-        }, 400);
-    }
 
     //////console logs
     console.log(localStorageKanban.retrieveData(storageItemNames[0]));
