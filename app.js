@@ -16,15 +16,12 @@ $(function() {
     var errorMsg = new ErrorMsg();
 
     var render = new Render( dAndD );
-
     var ticketHandler = new TicketHandler(newBoard, render, storageHandle, errorMsg);
 
     var animatedBin = new Anime( $( document.getElementById("icon_bin") ) );
 
     var columns = [columnToDo, columnInProgress, columnReview, columnDone];
-
     var storageItemNames = ["To_Do", "In_Progress", "Review", "Done"];
-
     var retrievedDataArrays = [localStorageKanban.retrieveData(storageItemNames[0]), localStorageKanban.retrieveData(storageItemNames[1]), localStorageKanban.retrieveData(storageItemNames[2]), localStorageKanban.retrieveData(storageItemNames[3])];
 
     for (var i = 0; i < columns.length; i++) {
@@ -33,18 +30,14 @@ $(function() {
 
     function userTicket() {
         var ticket = new Ticket();
-
         ticket.setTitle( $("input[name='ticket_title']").val() );
         ticket.setDescription( $("input[name='ticket_description']").val() );
-
         return ticket;
     }
 
     function userColumn() {
         var column = new Column();
-
         column.setTitle( $("input[name='column_title']").val() );
-
         return column;
     }
 
@@ -53,14 +46,12 @@ $(function() {
 
     for (var s = 0; s < columns.length; s++) {
         render.initialRetrievedData( retrievedDataArrays[s], storageItemNames[s], columns[s], localStorageKanban );
-        //initRetrievedDataRender(retrievedDataArrays[s], storageItemNames[s], columns[s]);
     }
 
     //////buttons
     $("#create_a_ticket").on("click", function(event) {
         event.preventDefault();
         if ( userTicket().getTitle().length != 0 && userTicket().getDescription().length != 0) {
-
             ticketHandler.createATicket( userTicket(), columnToDo );
             $("input:text").val("");
         } else {
@@ -71,28 +62,23 @@ $(function() {
 
     $("#move_ticket").on("click", function(event) {
         event.preventDefault();
-
         ticketHandler.moveTicket( userTicket(), userColumn() );
         errorMsg.showErrorMsg();
     });
 
     $("#delete_ticket").on("click", function(event) {
         event.preventDefault();
-
         ticketHandler.deleteTicket( userTicket(), columnDone, animatedBin );
         errorMsg.showErrorMsg();
     });
 
     $("#clear_ticket").on("click", function(event) {
         event.preventDefault();
-
         for (var i = 0; i < columns.length; i++) {
             columns[i].removeAllTickets();
             render.ticket(columns[i]);
-
             storageHandle.storageItemClearAndUpdate(storageItemNames[i], columns[i] );
         }
-
     });
 
     $("#selectFiles").on("change", bgImgAction.imgSelectAndDisplay);
