@@ -1,7 +1,7 @@
-# Kanban Board
+## Kanban Board
 
 #### Features
-- Drag and drop image file from desktop to change the background of the board
+- Drag and drop image files from desktop to change the background of the board
 - Drag and drop tickets
 - Animated bin
 
@@ -13,7 +13,8 @@
      * Local storage
      * Drag and drop
   * CSS
-     * Media query
 
 #### Testing Framework
 * Mocha
+
+[Live Demo](http://embrilliant.github.io/kanban_board/) (For best experience please view it on Chrome.)
