@@ -13,6 +13,9 @@
 <body>
     <div id="wrap">
         <div id="board_container">
+            <div id="vidBg">
+
+            </div>
         </div>
         <div id="control">
 
@@ -43,6 +46,7 @@
                 <div id="bgImage">
                     <input type="file" id="selectFiles" accept="image/*">
                     <label id="fileButton" for="selectFiles">Choose an image file or drag one from your computer and drop it on the board to change the background.</label>
+
                     <button id="dltBgImg">Delete background image</button>
                 </div>
             </div>
@@ -52,22 +56,7 @@
     </div>
     <script type="text/javascript" src="js/lib/jquery/dist/jquery.min.js"></script>
 
-    <!-- build:js js/production.min.js -->
-    <script type="text/javascript" src="js/emily/kanban/LocalStorage.js"></script>
-    <script type="text/javascript" src="js/emily/kanban/Board.js"></script>
-    <script type="text/javascript" src="js/emily/kanban/Column.js"></script>
-    <script type="text/javascript" src="js/emily/kanban/Ticket.js"></script>
-
-    <script type="text/javascript" src="js/emily/kanban/LocalStorageHandle.js"></script>
-    <script type="text/javascript" src="js/emily/kanban/Render.js"></script>
-    <script type="text/javascript" src="js/emily/kanban/ErrMsg.js"></script>
-    <script type="text/javascript" src="js/emily/kanban/Anime.js"></script>
-    <script type="text/javascript" src="js/emily/kanban/DAndD.js"></script>
-    <script type="text/javascript" src="js/emily/kanban/BgImgAction.js"></script>
-    <script type="text/javascript" src="js/emily/kanban/TicketHandler.js"></script>
-    <!-- endbuild -->
-
-    <script type="text/javascript" src="app.js"></script>
+    <script src="js/production.min.js"></script>
 
 </body>
 </html>
