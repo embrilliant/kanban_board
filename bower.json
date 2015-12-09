@@ -1,0 +1,17 @@
+{
+  "name": "Kanban",
+  "version": "0.1.0",
+  "authors": [
+    "Emily"
+  ],
+  "description": "No description",
+  "main": "index.html",
+  "moduleType": [],
+  "license": "MIT",
+  "homepage": "n/a",
+  "dependencies": {
+    "jquery": "latest"
+  },
+  "devDependencies": {
+  }
+}
