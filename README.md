@@ -1,6 +1,6 @@
 # Kanban Board
 
-####A beautiful minimal agile development tool for anything.
+#### A beautiful minimal agile development tool for anything.
 
 ## Features
 - Drag and drop image file from desktop to change the background of the board
@@ -23,7 +23,7 @@
 #### Testing Framework
 * Mocha
 
-##Setup
+## Setup
 
 Install external libraries:
 
@@ -31,9 +31,9 @@ Install external libraries:
 bower install
 ```
 
-##License
+## License
 
 MIT License
 
-##Demo
+## Demo
 [Live Demo](http://embrilliant.github.io/kanban_board/) (For best experience please view it on Chrome.)
